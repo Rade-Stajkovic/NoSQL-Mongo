@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using NBP___Mongo.Services;
 using System;
 using System.Collections.Generic;
@@ -10,22 +11,23 @@ namespace NBP___Mongo.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class DealerController : ControllerBase
     {
-        private readonly UserService userService;
+        private readonly DealerService dealerService;
 
-        public UserController(UserService userService)
+        public DealerController(DealerService dealerService)
         {
-            this.userService = userService;
-
+            this.dealerService = dealerService;
         }
 
+
         [HttpPost]
-        public IActionResult CreateUser(string name, string surname, string username, string password)
+
+        public IActionResult CreateDealer(string username, string password, string name, string location, IEnumerable<ObjectId> carIds)
         {
             try
             {
-                userService.CreateUser(name, surname, username, password);
+                dealerService.CreateDealer(username, password, name ,location,carIds);
                 return Ok("uspelo");
             }
             catch (Exception e)
@@ -33,7 +35,5 @@ namespace NBP___Mongo.Controllers
                 throw new Exception(e.Message);
             }
         }
-
-
     }
 }
