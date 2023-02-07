@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <Folder Include="IServices\" />
-    <Folder Include="Model\" />
     <Folder Include="DbClient\" />
     <Folder Include="Services\" />
   </ItemGroup>
