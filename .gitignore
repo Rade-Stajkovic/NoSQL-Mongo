@@ -48,3 +48,11 @@ Thumbs.db
 *.mov
 *.wmv
 
+
+*.suo
+*.user
+_ReSharper.*
+bin
+obj
+packages
+*.vs
