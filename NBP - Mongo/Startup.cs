@@ -38,6 +38,7 @@ namespace NBP___Mongo
 
             services.AddSingleton<IDbClient, DbClient>();
             services.AddSingleton<CarService>();
+            services.AddSingleton<DealerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
