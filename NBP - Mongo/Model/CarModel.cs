@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NBP___Mongo.Model
 {
-    public class Model
+    public class CarModel
     {
     }
 }

@@ -7,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NBP___Mongo.DBClient;
+using NBP___Mongo.Model;
+using NBP___Mongo.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +35,9 @@ namespace NBP___Mongo
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "NBP___Mongo", Version = "v1" });
             });
+
+            services.AddSingleton<IDbClient, DbClient>();
+            services.AddSingleton<CarService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

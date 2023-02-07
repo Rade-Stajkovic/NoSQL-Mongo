@@ -11,10 +11,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="IServices\" />
-    <Folder Include="DbClient\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>
