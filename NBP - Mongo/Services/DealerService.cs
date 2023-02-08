@@ -15,6 +15,8 @@ namespace NBP___Mongo.Services
         
         private readonly IMongoCollection<Dealer> dealerCollection;
         private readonly IMongoCollection<Car> carsCollection;
+        private readonly IMongoCollection<TestDrive> testDriveCollection;
+        private readonly IMongoCollection<User> userCollection;
 
 
         public DealerService(IDbClient dbClient)
@@ -63,6 +65,33 @@ namespace NBP___Mongo.Services
             }
             return null;
         }
+
+        public async Task<List<TestDrive>> GetDealersTestDrives(string DealerID)
+        {
+            List<TestDrive> testDrives = new List<TestDrive>();
+            testDrives = await testDriveCollection.Find(p => p.Dealer.Id == DealerID).ToListAsync();
+            return testDrives;
+
+        }
+
+        public async Task<bool> AddCarToDealer(string CarID, string DealerID)
+        {
+            Car c = await carsCollection.Find(p => p.Id == CarID).FirstOrDefaultAsync();
+            Dealer dealer = await dealerCollection.Find(p => p.ID == DealerID).FirstOrDefaultAsync();
+
+            //...
+            var update2 = Builders<Car>.Update.Set("Dealer", new MongoDBRef("dealers", dealer.ID));
+            await carsCollection.UpdateOneAsync(p=>p.Id == CarID, update2);
+
+            List<MongoDBRef> oldcars = dealer.Cars;
+            oldcars.Add(new MongoDBRef("cars", CarID));
+
+            var update3 = Builders<Dealer>.Update.Set("Cars", oldcars);
+            await dealerCollection.UpdateManyAsync(p => p.ID == DealerID, update3);
+
+            return true;
+        }
+
 
     }
 
