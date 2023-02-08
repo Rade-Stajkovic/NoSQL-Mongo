@@ -23,7 +23,7 @@ namespace NBP___Mongo.Model
 
         public String Drivetrain  { get; set; }
 
-        public List<EngineType> MyProperty { get; set; }
+        public List<EngineType> Engine { get; set; }
 
         public String Description { get; set; }
 
