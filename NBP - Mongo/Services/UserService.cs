@@ -26,7 +26,7 @@ namespace NBP___Mongo.Services
 
         }
 
-        public void CreateUser(string name, string surname, string username, string password/*, IEnumerable<ObjectId> carIds, IEnumerable<ObjectId> driveIds*/)
+        public async Task<string> CreateUser(string name, string surname, string username, string password/*, IEnumerable<ObjectId> carIds, IEnumerable<ObjectId> driveIds*/)
         {
             //List<MongoDBRef> rentCars = new List<MongoDBRef>();
             //foreach (var carId in carIds)
@@ -39,16 +39,42 @@ namespace NBP___Mongo.Services
             //{
             //    testDrives.Add(new MongoDBRef("testDrives", driveId));
             //}
-            User user = new User
+
+            var user = userCollection.Find(p => p.Username == username).FirstOrDefaultAsync();
+            if (user != null)
             {
-                Name = name,
-                Surname = surname,
-                Username = username,
-                Password = password,
-                //RentCars = rentCars,
-                //TestDrives = testDrives
-            };
-            userCollection.InsertOne(user);
+                return "Korisnik sa tim korisničkim imenom već postoji.";
+            }
+            else
+            {
+                User user1 = new User
+                {
+                    Name = name,
+                    Surname = surname,
+                    Username = username,
+                    Password = password,
+                    //RentCars = rentCars,
+                    //TestDrives = testDrives
+                };
+                userCollection.InsertOne(user1);
+                return "Uspešno kreiran korisnik.";
+
+            }
+            
         }
+
+
+
+        public async Task<User> LogInUser(String username, String password)
+        {
+           
+            var user = await userCollection.Find(x => x.Username == username && x.Password == password).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                return user;
+            }
+            return null;
+        }
+
     }
 }

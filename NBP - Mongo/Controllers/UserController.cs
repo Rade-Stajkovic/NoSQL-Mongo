@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NBP___Mongo.Model;
 using NBP___Mongo.Services;
 using System;
 using System.Collections.Generic;
@@ -20,17 +21,48 @@ namespace NBP___Mongo.Controllers
 
         }
 
+
         [HttpPost]
-        public IActionResult CreateUser(string name, string surname, string username, string password)
+        public async Task<IActionResult> CreateUser(string name, string surname, string username, string password)
         {
             try
             {
-                userService.CreateUser(name, surname, username, password);
-                return Ok("uspelo");
+                var result = await userService.CreateUser(name, surname, username, password);
+                if (result == "Uspešno kreiran korisnik.")
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return BadRequest(result);
+                }
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
+
+
+
+        [HttpGet]
+        [Route("LogIn/{username}/{password}")]
+        public IActionResult LogIn(String username, String password)
+        {
+            try
+            {
+                Task<User> res = userService.LogInUser(username, password);
+                User res1 = res.Result;
+                if (res1 == null)
+                {
+                    return BadRequest("Korisnik ne postoji ili ste pogresli parametre za prijavu");
+                }
+
+                return Ok(res1);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
 
