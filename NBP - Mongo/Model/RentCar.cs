@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using System.Text.Json.Serialization;
 
 namespace NBP___Mongo.Model
 {
     public class RentCar
     {
+        [JsonIgnore]
+
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string ID {  get; set; }
