@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using NBP___Mongo.Model;
@@ -78,12 +79,54 @@ namespace NBP___Mongo.Controllers
         }
 
 
+        //[HttpGet]
+        //[Route("GetRentCars/{dealerId}")]
+        //public async Task<IActionResult> GetRentCars(string dealerId)
+        //{
+        //    List<RentCar> list = await dealerService.GetRentCars (dealerId);
+        //    return new JsonResult(list);
+        //}
+
+
+
         [HttpPost]
         [Route("AddCarToDealer/{CarID}/{DealerID}")]
         public async Task<IActionResult> AddCarToDealer(string CarID, string DealerID)
         {
             bool ttt = await dealerService.AddCarToDealer(CarID,DealerID);
             return new JsonResult(ttt);
+        }
+
+
+        [HttpPost]
+        [Route("UpdateCarPrice/{id}/{price}/{dealerId}")]
+        public async Task<IActionResult> UpdateCarPrice(string id, double price, string dealerId)
+        {
+            try
+            {
+                bool a = await dealerService.UpdateCarPrice(id, price, dealerId);
+                return new JsonResult(a);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("UpdateCarAvailability/{id}/{available}/{dealerId}")]
+        public async Task<IActionResult> UpdateCarAvailability(string id, bool available, string dealerId)
+        {
+            try
+            {
+                bool a = await dealerService.UpdateCarAvailability(id, available, dealerId);
+                return new JsonResult(a);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
     }

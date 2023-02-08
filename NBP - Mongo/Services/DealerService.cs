@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -11,22 +12,27 @@ namespace NBP___Mongo.Services
 {
     public class DealerService
     {
-      
-        
+
+
         private readonly IMongoCollection<Dealer> dealerCollection;
         private readonly IMongoCollection<Car> carsCollection;
         private readonly IMongoCollection<TestDrive> testDriveCollection;
         private readonly IMongoCollection<User> userCollection;
+        private readonly IMongoCollection<RentCar> rentcarCollection;
+
+
+
 
 
         public DealerService(IDbClient dbClient)
         {
             this.dealerCollection = dbClient.GetDealerCollection();
             this.carsCollection = dbClient.GetCarCollection();
+            this.rentcarCollection = dbClient.GetRentCarCollection();
         }
 
 
-        public async Task<string> CreateDealer(string username, string password, string name,string location /*IEnumerable<ObjectId> carIds*/)
+        public async Task<string> CreateDealer(string username, string password, string name, string location /*IEnumerable<ObjectId> carIds*/)
         {
             //List<MongoDBRef> cars = new List<MongoDBRef>();
             //foreach (var carId in carIds)
@@ -47,7 +53,7 @@ namespace NBP___Mongo.Services
                     Password = password,
                     Name = name,
                     Location = location,
-                   
+
                 };
 
                 dealerCollection.InsertOne(dealer1);
@@ -68,10 +74,8 @@ namespace NBP___Mongo.Services
 
         public async Task<List<TestDrive>> GetDealersTestDrives(string DealerID)
         {
-            List<TestDrive> testDrives = new List<TestDrive>();
-            testDrives = await testDriveCollection.Find(p => p.Dealer.Id == DealerID).ToListAsync();
+            var testDrives = testDriveCollection.AsQueryable().Where(r => r.Dealer.Id == DealerID).ToList();
             return testDrives;
-
         }
 
         public async Task<bool> AddCarToDealer(string CarID, string DealerID)
@@ -79,9 +83,14 @@ namespace NBP___Mongo.Services
             Car c = await carsCollection.Find(p => p.Id == CarID).FirstOrDefaultAsync();
             Dealer dealer = await dealerCollection.Find(p => p.ID == DealerID).FirstOrDefaultAsync();
 
-            //...
+
+            if (c == null || dealer == null)
+            {
+                return false;
+
+            }
             var update2 = Builders<Car>.Update.Set("Dealer", new MongoDBRef("dealers", dealer.ID));
-            await carsCollection.UpdateOneAsync(p=>p.Id == CarID, update2);
+            await carsCollection.UpdateOneAsync(p => p.Id == CarID, update2);
 
             List<MongoDBRef> oldcars = dealer.Cars;
             oldcars.Add(new MongoDBRef("cars", CarID));
@@ -93,6 +102,35 @@ namespace NBP___Mongo.Services
         }
 
 
+
+
+        public async Task<bool> UpdateCarPrice(string id, double price, string dealerId)
+        {
+
+            var filter = Builders<Car>.Filter.Eq(c => c.Id, id);
+            var update = Builders<Car>.Update
+                .Set(c => c.Price, price)
+                .Set(c => c.Dealer, new MongoDBRef("dealers", dealerId));
+            carsCollection.UpdateOne(filter, update);
+            return true;
+        }
+        public async Task<bool> UpdateCarAvailability(string id, bool available, string dealerId)
+        {
+
+            var filter = Builders<Car>.Filter.Eq(c => c.Id, id);
+            var update = Builders<Car>.Update
+                .Set(c => c.Available, available)
+                .Set(c => c.Dealer, new MongoDBRef("dealers", dealerId));
+
+            carsCollection.UpdateOne(filter, update);
+            return true;
+        }
+
+
+
+
+
     }
 
-}
+
+    }
