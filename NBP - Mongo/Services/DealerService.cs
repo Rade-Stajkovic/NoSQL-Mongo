@@ -24,25 +24,44 @@ namespace NBP___Mongo.Services
         }
 
 
-        public void CreateDealer(string username, string password, string name,string location, IEnumerable<ObjectId> carIds)
+        public async Task<string> CreateDealer(string username, string password, string name,string location /*IEnumerable<ObjectId> carIds*/)
         {
-            List<MongoDBRef> cars = new List<MongoDBRef>();
-            foreach (var carId in carIds)
+            //List<MongoDBRef> cars = new List<MongoDBRef>();
+            //foreach (var carId in carIds)
+            //{
+            //    cars.Add(new MongoDBRef("cars", carId));
+            //}
+            var dealer = dealerCollection.Find(p => p.Username == username).FirstOrDefaultAsync();
+            if (dealer != null)
             {
-                cars.Add(new MongoDBRef("cars", carId));
+                return "Korisnik sa tim korisničkim imenom već postoji.";
             }
-
-
-            Dealer dealer = new Dealer
+            else
             {
-                Username = username,
-                Password = password,
-                Name = name,
-                Location = location,
-                Cars = cars
-            };
 
-             dealerCollection.InsertOne(dealer);
+                Dealer dealer1 = new Dealer
+                {
+                    Username = username,
+                    Password = password,
+                    Name = name,
+                    Location = location,
+                   
+                };
+
+                dealerCollection.InsertOne(dealer1);
+                return "Uspešno kreiran korisnik.";
+            }
+        }
+
+        public async Task<Dealer> LogInDealer(String username, String password)
+        {
+
+            var dealer = await dealerCollection.Find(x => x.Username == username && x.Password == password).FirstOrDefaultAsync();
+            if (dealer != null)
+            {
+                return dealer;
+            }
+            return null;
         }
 
     }
