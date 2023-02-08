@@ -79,13 +79,14 @@ namespace NBP___Mongo.Controllers
         }
 
 
-        //[HttpGet]
-        //[Route("GetRentCars/{dealerId}")]
-        //public async Task<IActionResult> GetRentCars(string dealerId)
-        //{
-        //    List<RentCar> list = await dealerService.GetRentCars (dealerId);
-        //    return new JsonResult(list);
-        //}
+        [HttpGet]
+        [Route("GetRentCars/{dealerId}")]
+        public async Task<IActionResult> GetRentCars(string dealerId)
+        {
+            List<RentCar> list = await dealerService.GetRentCars(dealerId);
+            IActionResult result = Ok(list);
+            return result;
+        }
 
 
 
@@ -94,7 +95,7 @@ namespace NBP___Mongo.Controllers
         public async Task<IActionResult> AddCarToDealer(string CarID, string DealerID)
         {
             bool ttt = await dealerService.AddCarToDealer(CarID,DealerID);
-            return new JsonResult(ttt);
+            return Ok(ttt);
         }
 
 
