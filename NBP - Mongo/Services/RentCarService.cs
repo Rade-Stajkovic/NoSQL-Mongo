@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using NBP___Mongo.DBClient;
 using NBP___Mongo.Model;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -81,6 +82,26 @@ namespace NBP___Mongo.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<bool> FrobidRental(string RentalID)
+        {
+            RentCar r = await rentcarCollection.Find(p => p.ID == RentalID).FirstOrDefaultAsync();
+            if (r != null)
+            {
+                var update = Builders<RentCar>.Update.Set("Allowed", false);
+                await rentcarCollection.UpdateOneAsync(p => p.ID == RentalID, update);
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<List<RentCar>> GetDealersRentals(string DealerID)
+        {
+            List<RentCar> rentals = new List<RentCar>();
+            rentals = await rentcarCollection.Find(p => p.Dealer.Id == DealerID).ToListAsync();
+            return rentals;
+
         }
 
     }
