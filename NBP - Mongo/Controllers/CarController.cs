@@ -21,12 +21,17 @@ namespace NBP___Mongo.Controllers
 
         [HttpPost]
         [Route("AddCar")]
-        public async Task<IActionResult> AddCar(String description, String year, String interiorColor, String exteriorColor)
+        public async Task<IActionResult> AddCar(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool available)
         {
             try
             {
-                await carService.AddNewCarAsync(description, year, interiorColor, exteriorColor);
-                return Ok("Uspesno dodat automobil");
+                var rez = await carService.AddNewCarAsync(description, year, interiorColor, exteriorColor, nameMark, nameModel, engineId, price, available);
+                if (rez)
+                {
+                    return Ok("Uspesno dodat automobil");
+                }
+                return BadRequest("Greska");
+               
             }
             catch (Exception e)
             {
@@ -90,6 +95,40 @@ namespace NBP___Mongo.Controllers
             try
             {
                 var rez = await carService.AddModelToMark(nameMark, nameModel);
+                if (rez)
+                {
+                    return Ok("Uspesno dodat model u listu");
+                }
+                return BadRequest("Greska");
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("AddEngine/{fuelType}/{power}/{displacement}")]
+        public async Task<IActionResult> AddEngine(String fuelType, int power, String displacement)
+        {
+            try
+            {
+                await carService.AddNewEngine(fuelType, power, displacement);
+                return Ok("Uspesno dodat motor");
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("AddEngineToCar/{carId}/{engineId}")]
+        public async Task<IActionResult> AddEngineToCar(String carId, String engineId)
+        {
+            try
+            {
+                var rez = await carService.AddEngineToCar(carId, engineId);
                 if (rez)
                 {
                     return Ok("Uspesno dodat model u listu");

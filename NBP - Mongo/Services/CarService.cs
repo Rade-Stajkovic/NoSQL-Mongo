@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using NBP___Mongo.DBClient;
 using NBP___Mongo.Model;
+using MongoDB.Driver.Linq;
 
 namespace NBP___Mongo.Services
 {
@@ -28,22 +29,37 @@ namespace NBP___Mongo.Services
 
         }
 
-        public async Task AddNewCarAsync(String description, String year, String interiorColor, String exteriorColor)
+        public async Task<bool> AddNewCarAsync(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool av)
         {
+            Mark mark = await markCollection.Find(c => c.Name == nameMark).FirstOrDefaultAsync();
+            CarModel model = await modelCollection.Find(m => m.Name == nameModel).FirstOrDefaultAsync();
+            EngineType engine = await engineCollection.Find(e => e.Id == engineId).FirstOrDefaultAsync();
 
+            if (mark == null || model == null || engine == null)
+            {
+                return false;
 
+            }
 
-
+            List<EngineType> list = new List<EngineType>();
+            list.Add(engine);
             Car car = new Car
             {
+                Mark = mark,
+                CarModel = model,
+                EngineTypes = list,
                 ExteriorColor = exteriorColor,
                 InteriorColor = interiorColor,
                 Description = description,
-                Year = year
+                Year = year,
+                Price = price,
+                Available = av
+               
                 
             };
 
             await carCollection.InsertOneAsync(car);
+            return true;
         
         }
 
@@ -90,21 +106,30 @@ namespace NBP___Mongo.Services
 
             }
 
-            if (mark.Models == null)
-            {
-                mark.Models = new List<CarModel>();
-                mark.Models.Add(model);
-            }
-            mark.Models.Add(model);
+            //
             model.Mark = mark;
 
+           
 
-            var update = Builders<Mark>.Update.Set("Models", JsonSerializer.Serialize(mark.Models));
-            await markCollection.UpdateOneAsync(p => p.Name == mark.Name, update);
+           
 
-            var update2 = Builders<CarModel>.Update.Set("Mark", JsonSerializer.Serialize(mark));
+            var update2 = Builders<CarModel>.Update.Set("Mark", model.Mark);
             await modelCollection.UpdateOneAsync(m => m.Name == model.Name, update2);
 
+
+            //if (mark.Models == null)
+            //{
+            //    mark.Models = new List<CarModel>();
+            //    mark.Models.Add(model);
+            //}
+            //else
+            //{
+            //    mark.Models.Add(model);
+            //}
+            
+
+            //var update = Builders<Mark>.Update.Push("Models", JsonSerializer.Serialize(model));
+            //await markCollection.UpdateOneAsync(p => p.Name == mark.Name, update);
             return true;
         }
 
@@ -120,6 +145,43 @@ namespace NBP___Mongo.Services
             };
 
             await modelCollection.InsertOneAsync(model);
+
+        }
+
+        // EngineType service
+
+        public async Task AddNewEngine(String fuelType, int power, String displacement)
+        {
+            EngineType engine = new EngineType
+            {
+                FuelType = fuelType,
+                Displacement = displacement,
+                Power = power
+        
+
+            };
+
+            await engineCollection.InsertOneAsync(engine);
+
+        }
+
+        public async Task<bool> AddEngineToCar(String carId, String engineId)
+        {
+            Car car = await carCollection.Find(c => c.Id == carId).FirstOrDefaultAsync();
+            EngineType engine = await engineCollection.Find(e => e.Id == engineId).FirstOrDefaultAsync();
+
+            if (car == null || engine == null)
+            {
+                return false;
+
+            }
+
+            car.EngineTypes.Add(engine);
+
+            var update = Builders<Car>.Update.Set("EngineTypes", car.EngineTypes);
+            await carCollection.UpdateOneAsync(c => c.Id == car.Id, update);
+
+            return true;
 
         }
 
