@@ -45,7 +45,6 @@ namespace NBP___Mongo.Services
              dealerCollection.InsertOne(dealer);
         }
 
-
     }
 
 }
