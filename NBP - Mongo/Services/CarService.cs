@@ -41,13 +41,12 @@ namespace NBP___Mongo.Services
 
             }
 
-            List<EngineType> list = new List<EngineType>();
-            list.Add(engine);
+         
             Car car = new Car
             {
                 Mark = mark,
                 CarModel = model,
-                EngineTypes = list,
+                EngineType = engine,
                 ExteriorColor = exteriorColor,
                 InteriorColor = interiorColor,
                 Description = description,
@@ -165,23 +164,22 @@ namespace NBP___Mongo.Services
 
         }
 
-        public async Task<bool> AddEngineToCar(String carId, String engineId)
+       
+
+        public async Task<List<Car>> GetCars()
         {
-            Car car = await carCollection.Find(c => c.Id == carId).FirstOrDefaultAsync();
-            EngineType engine = await engineCollection.Find(e => e.Id == engineId).FirstOrDefaultAsync();
+            return  await carCollection.Find(c => true).ToListAsync();
 
-            if (car == null || engine == null)
-            {
-                return false;
+            
+        }
 
-            }
+        public async Task<List<Car>> GetCarsWithFilters(String markName, String modelName, double maxPrice, String fuelType)
+        {
+            
 
-            car.EngineTypes.Add(engine);
 
-            var update = Builders<Car>.Update.Set("EngineTypes", car.EngineTypes);
-            await carCollection.UpdateOneAsync(c => c.Id == car.Id, update);
+            return await carCollection.Find(c => (maxPrice != 0)? c.Price  < maxPrice : true && (markName !="")?c.Mark.Name == markName:true && (modelName != "") ? c.CarModel.Name == modelName : true && c.Available).ToListAsync();
 
-            return true;
 
         }
 

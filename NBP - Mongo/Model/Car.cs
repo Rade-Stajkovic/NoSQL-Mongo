@@ -23,7 +23,7 @@ namespace NBP___Mongo.Model
 
         public String Drivetrain  { get; set; }
 
-        public List<EngineType> EngineTypes { get; set; }
+        public EngineType EngineType { get; set; }
 
         public String Description { get; set; }
 
@@ -35,10 +35,7 @@ namespace NBP___Mongo.Model
 
         public MongoDBRef Dealer{ get; set; }
 
-        public Car ()
-        {
-            EngineTypes = new List<EngineType>();
-        }
+       
 
 
     }

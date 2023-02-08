@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NBP___Mongo.Model;
 using NBP___Mongo.Services;
 using System;
 using System.Collections.Generic;
@@ -122,24 +123,45 @@ namespace NBP___Mongo.Controllers
             }
         }
 
-        [HttpPut]
-        [Route("AddEngineToCar/{carId}/{engineId}")]
-        public async Task<IActionResult> AddEngineToCar(String carId, String engineId)
+       
+
+        [HttpGet]
+        [Route("GetAllCars")]
+
+        public async Task<IActionResult> GerAllCars()
         {
             try
             {
-                var rez = await carService.AddEngineToCar(carId, engineId);
-                if (rez)
-                {
-                    return Ok("Uspesno dodat model u listu");
-                }
-                return BadRequest("Greska");
+                List<Car> list = await carService.GetCars();
+
+                return Ok(list);
             }
             catch (Exception e)
             {
+
                 throw new Exception(e.Message);
             }
         }
+
+
+        [HttpGet]
+        [Route("GetCarsWithFilters/{markName}/{modelName}/{maxPrice}/{fuelType}")]
+
+        public async Task<IActionResult> GerCarsWithFilters(String markName, String modelName, double maxPrice, String fuelType)
+        {
+            try
+            {
+                List<Car> list = await carService.GetCarsWithFilters(markName, modelName, maxPrice, fuelType);
+
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
+
 
     }
 }

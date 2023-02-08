@@ -74,7 +74,9 @@ namespace NBP___Mongo.Services
 
         public async Task<List<TestDrive>> GetDealersTestDrives(string DealerID)
         {
-            var testDrives = testDriveCollection.AsQueryable().Where(r => r.Dealer.Id == DealerID).ToList();
+            //var testDrives = testDriveCollection.AsQueryable().Where(r => r.Dealer.Id == DealerID).ToList();
+            var testDrives = await testDriveCollection.Find(t => t.Dealer.Id == DealerID).ToListAsync();
+
             return testDrives;
         }
 
