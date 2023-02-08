@@ -67,5 +67,37 @@ namespace NBP___Mongo.Controllers
         }
 
 
+        [HttpGet]
+        [Route("GetRentCars/{userID}")]
+        public async Task<IActionResult> GetRentCars(string userID)
+        {
+            try
+            {
+                List<RentCar> rentCars = await userService.GetRentCars(userID);
+                return Ok(rentCars);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetTestDrives/{userID}")]
+        public async Task<IActionResult> GetTestDrives(string userID)
+        {
+            try
+            {
+                List<TestDrive> testDrives = await userService.GetTestDrives(userID);
+                return Ok(testDrives);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+
     }
 }

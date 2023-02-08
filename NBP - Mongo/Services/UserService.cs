@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Bson;
@@ -13,34 +14,21 @@ namespace NBP___Mongo.Services
     {
 
        
-        private readonly IMongoCollection<RentCar> rentCarsCollection;
-        private readonly IMongoCollection<TestDrive> testDrivesCollection;
-
+        private readonly IMongoCollection<RentCar> rentCarCollection;
+        private readonly IMongoCollection<TestDrive> testDriveCollection;
         private readonly IMongoCollection<User> userCollection;
 
         public UserService(IDbClient dbClient)
         {
             this.userCollection = dbClient.GetUserCollection();
-            this.rentCarsCollection = dbClient.GetRentCarCollection();
-            this.testDrivesCollection = dbClient.GetTestDriveCollection();
+            this.rentCarCollection = dbClient.GetRentCarCollection();
+            this.testDriveCollection = dbClient.GetTestDriveCollection();
 
         }
 
-        public async Task<string> CreateUser(string name, string surname, string username, string password/*, IEnumerable<ObjectId> carIds, IEnumerable<ObjectId> driveIds*/)
-        {
-            //List<MongoDBRef> rentCars = new List<MongoDBRef>();
-            //foreach (var carId in carIds)
-            //{
-            //    rentCars.Add(new MongoDBRef("rentCars", carId));
-            //}
-
-            //List<MongoDBRef> testDrives = new List<MongoDBRef>();
-            //foreach (var driveId in driveIds)
-            //{
-            //    testDrives.Add(new MongoDBRef("testDrives", driveId));
-            //}
-
-            var user = userCollection.Find(p => p.Username == username).FirstOrDefaultAsync();
+        public async Task<string> CreateUser(string name, string surname, string username, string password)
+        {  
+            var user = await userCollection.Find(p => p.Username == username).FirstOrDefaultAsync();
             if (user != null)
             {
                 return "Korisnik sa tim korisničkim imenom već postoji.";
@@ -53,21 +41,16 @@ namespace NBP___Mongo.Services
                     Surname = surname,
                     Username = username,
                     Password = password,
-                    //RentCars = rentCars,
-                    //TestDrives = testDrives
                 };
                 userCollection.InsertOne(user1);
                 return "Uspešno kreiran korisnik.";
-
             }
             
         }
 
 
-
-        public async Task<User> LogInUser(String username, String password)
+        public async Task<User> LogInUser(string username, string password)
         {
-           
             var user = await userCollection.Find(x => x.Username == username && x.Password == password).FirstOrDefaultAsync();
             if (user != null)
             {
@@ -75,6 +58,32 @@ namespace NBP___Mongo.Services
             }
             return null;
         }
+
+        public async Task<List<RentCar>> GetRentCars(string userID)
+        {
+            List<RentCar> rentCars = new List<RentCar>();
+            var user = await userCollection.Find(p => p.ID == userID).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                var rentCarIds = user.RentCars.Select(x => x.Id).ToList();
+                rentCars = await rentCarCollection.Find(p => rentCarIds.Contains(p.ID)).ToListAsync();
+            }
+            return rentCars;
+        }
+
+        public async Task<List<TestDrive>> GetTestDrives(string userID)
+        {
+            List<TestDrive> testDrives = new List<TestDrive>();
+            var user = await userCollection.Find(p => p.ID == userID).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                var testDrivesIds = user.TestDrives.Select(x => x.Id).ToList();
+                testDrives = await testDriveCollection.Find(p => testDrivesIds.Contains(p.ID)).ToListAsync();
+            }
+            return testDrives;
+        }
+
+
 
     }
 }
