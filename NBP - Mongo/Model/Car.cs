@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+
 namespace NBP___Mongo.Model
 {
     public class Car
@@ -32,7 +34,8 @@ namespace NBP___Mongo.Model
         public double Price { get; set; }
 
         public bool Available { get; set; }
-
+        
+        [JsonIgnore]
         public MongoDBRef Dealer{ get; set; }
 
        

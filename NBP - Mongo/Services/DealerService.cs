@@ -128,6 +128,12 @@ namespace NBP___Mongo.Services
             return true;
         }
 
+        public async Task<List<RentCar>> GetRentCars(string dealerId)
+        {
+            var filter = Builders<RentCar>.Filter.Eq(rentcar => rentcar.Dealer.Id, dealerId);
+            var result = await rentcarCollection.Find(filter).ToListAsync();
+            return result;
+        }
 
 
 
@@ -135,4 +141,4 @@ namespace NBP___Mongo.Services
     }
 
 
-    }
+}

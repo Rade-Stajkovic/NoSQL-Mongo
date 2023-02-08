@@ -11,7 +11,6 @@ namespace NBP___Mongo.Model
 {
     public class RentCar
     {
-        [JsonIgnore]
 
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -21,10 +20,12 @@ namespace NBP___Mongo.Model
 
         public DateTime OccupiedUntill { get; set; }
 
+        [JsonIgnore]
         public MongoDBRef User { get; set; }
 
         public Car Car { get; set; }
 
+        [JsonIgnore]
         public MongoDBRef Dealer { get; set; }
 
         public bool Allowed { get; set; }
