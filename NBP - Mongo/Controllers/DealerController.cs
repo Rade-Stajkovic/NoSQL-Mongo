@@ -68,5 +68,23 @@ namespace NBP___Mongo.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("GetDealersTestDrives/{DealerID}")]
+        public async Task<IActionResult> GetDealersTestDrives(string DealerID)
+        {
+            List<TestDrive> list = await dealerService.GetDealersTestDrives(DealerID);
+            return new JsonResult(list);
+        }
+
+
+        [HttpPost]
+        [Route("AddCarToDealer/{CarID}/{DealerID}")]
+        public async Task<IActionResult> AddCarToDealer(string CarID, string DealerID)
+        {
+            bool ttt = await dealerService.AddCarToDealer(CarID,DealerID);
+            return new JsonResult(ttt);
+        }
+
     }
 }
