@@ -27,7 +27,7 @@ namespace NBP___Mongo.Services
             this.rentcarCollection = dbClient.GetRentCarCollection();
         }
 
-        public async Task<bool> MakeCarRental(DateTime OccupiedFrom, DateTime OccupiedUntill, string CarID, string DealerID, string UserID )
+        public async Task<int> MakeCarRental(DateTime OccupiedFrom, DateTime OccupiedUntill, string CarID, string DealerID, string UserID )
         {
             RentCar r = new RentCar();
 
@@ -36,6 +36,19 @@ namespace NBP___Mongo.Services
             bool found = false;
             if(d!=null && c!=null)
             {
+                if(c.RentOrSale == false) return 0;
+                List<RentCar> rentals = await rentcarCollection.Find(p => p.Car.Id == CarID && p.Allowed == true).ToListAsync();
+                foreach(RentCar rental in rentals)
+                {
+                    int startCompare = OccupiedFrom.CompareTo(rental.OccupiedFrom);
+                    int endCompare = OccupiedUntill.CompareTo(rental.OccupiedUntill);
+
+                    if((startCompare >= 0 && endCompare <= 0) || (startCompare <= 0 && endCompare >= 0))
+                    {
+                        return -1;
+                    }
+                    //check if is booked 
+                }
                 foreach(MongoDBRef carRef in d.Cars.ToList())
                 {
                     //checking if the dealer really is dealer of that car
@@ -64,13 +77,13 @@ namespace NBP___Mongo.Services
                     u.RentCars.Add(new MongoDBRef("rentCar", rent.ID));
 
                     
-                    return true;
+                    return 1;
                 }
 
             }
 
             
-            return false;
+            return -2;
         }
 
         public async Task<bool> AllowRental(string RentalID)

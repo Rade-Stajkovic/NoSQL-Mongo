@@ -65,8 +65,13 @@ namespace NBP___Mongo.Services
             var user = await userCollection.Find(p => p.ID == userID).FirstOrDefaultAsync();
             if (user != null)
             {
-                var rentCarIds = user.RentCars.Select(x => x.Id).ToList();
-                rentCars = await rentCarCollection.Find(p => rentCarIds.Contains(p.ID)).ToListAsync();
+                foreach (var rentCarRef in user.RentCars)
+                {
+                    var ID = rentCarRef.Id.ToString();
+                    var rentCar = await rentCarCollection.Find(p => p.ID == ID).FirstOrDefaultAsync();
+                    if (rentCar != null)
+                        rentCars.Add(rentCar);
+                }
             }
             return rentCars;
         }
