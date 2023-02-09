@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 
 namespace NBP___Mongo.Services
 {
@@ -24,14 +25,19 @@ namespace NBP___Mongo.Services
             this.testCollection = dbClient.GetTestDriveCollection();
         }
 
-        public async Task<bool> MakeTestDrive(DateTime TestDate, string CarID, string DealerID, string UserID)
+        public async Task<int> MakeTestDrive(DateTime TestDate, string CarID, string DealerID, string UserID)
         {
-
             Car c = await carCollection.Find(p => p.Id == CarID).FirstOrDefaultAsync();
             Dealer d = await dealerCollection.Find(p => p.ID == DealerID).FirstOrDefaultAsync();
             bool found = false;
             if (d != null && c != null)
             {
+                if (c.RentOrSale == false) return 0;
+
+                TestDrive testt = await testCollection.Find(p => p.Car.Id == CarID && p.TestDate.Date == TestDate.Date).FirstOrDefaultAsync();
+
+                if (testt != null) return -1;
+
                 foreach (MongoDBRef carRef in d.Cars.ToList())
                 {
                     //checking if the dealer really is dealer of that car
@@ -59,13 +65,13 @@ namespace NBP___Mongo.Services
                     u.RentCars.Add(new MongoDBRef("testDrive", test.ID));
                     var update = Builders<User>.Update.Set("TestDrives", u.RentCars);
                     await userCollection.UpdateManyAsync(p => p.ID == UserID, update);
-                    return true;
+                    return 1;
                 }
 
             }
 
 
-            return false;
+            return -2;
         }
 
         public async Task<bool> DicardTestDrive(string TestDriveID)
