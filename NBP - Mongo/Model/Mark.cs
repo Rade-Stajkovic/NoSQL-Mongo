@@ -13,6 +13,7 @@ namespace NBP___Mongo.Model
 
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        [JsonIgnore]
         public string Id { get; set; }
 
         public String Name { get; set; }
