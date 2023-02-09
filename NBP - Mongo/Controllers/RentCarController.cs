@@ -41,9 +41,11 @@ namespace NBP___Mongo.Controllers
         [Route("MakeCarRental/{OccupiedFrom}/{OccupiedUntill}/{CarID}/{DealerID}/{UserID}")]
         public async Task<IActionResult> MakeCarRental(DateTime OccupiedFrom, DateTime OccupiedUntill, string CarID, string DealerID, string UserID)
         {
-            bool status = await _rentCarService.MakeCarRental(OccupiedFrom, OccupiedUntill, CarID, DealerID, UserID);
-            if (status) return Ok("Succesfully created rental!");
-            return BadRequest("Error");
+            int status = await _rentCarService.MakeCarRental(OccupiedFrom, OccupiedUntill, CarID, DealerID, UserID);
+            if (status == 0) return BadRequest("Error : You can't make rental for this car -> This car is not for rental!");
+            if (status == -1) return BadRequest("Error : You can't make rental for this car -> This car is already taken during that period!");
+            if (status == -2) return BadRequest("Error : We couldn't find Dealer or Car!");
+            return Ok("Successfully created rental for Car: " + CarID);
         }
 
         [HttpPut]
