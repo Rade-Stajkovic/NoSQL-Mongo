@@ -62,7 +62,7 @@ namespace NBP___Mongo.Services
                     await rentcarCollection.InsertOneAsync(rent);
 
                     u.RentCars.Add(new MongoDBRef("rentCar", rent.ID));
-
+                     await userCollection.ReplaceOneAsync(p => p.ID == UserID, u);
                     return true;
                 }
 

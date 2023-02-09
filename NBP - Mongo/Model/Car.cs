@@ -35,6 +35,7 @@ namespace NBP___Mongo.Model
 
         public MongoDBRef Dealer{ get; set; }
 
+
         public Car ()
         {
             EngineTypes = new List<EngineType>();

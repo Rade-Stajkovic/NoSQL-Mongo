@@ -59,17 +59,35 @@ namespace NBP___Mongo.Services
             return null;
         }
 
+        //public async Task<List<RentCar>> GetRentCars(string userID)
+        //{
+        //    List<RentCar> rentCars = new List<RentCar>();
+        //    var user = await userCollection.Find(p => p.ID == userID).FirstOrDefaultAsync();
+        //    if (user != null)
+        //    {
+        //        var rentCarIds = user.RentCars.Select(x => x.Id).ToList();
+        //        rentCars = await rentCarCollection.Find(p => rentCarIds.Contains(p.ID)).ToListAsync();
+        //    }
+        //    return rentCars;
+        //}
+
         public async Task<List<RentCar>> GetRentCars(string userID)
         {
             List<RentCar> rentCars = new List<RentCar>();
             var user = await userCollection.Find(p => p.ID == userID).FirstOrDefaultAsync();
             if (user != null)
             {
-                var rentCarIds = user.RentCars.Select(x => x.Id).ToList();
-                rentCars = await rentCarCollection.Find(p => rentCarIds.Contains(p.ID)).ToListAsync();
+                foreach (var rentCarRef in user.RentCars)
+                {
+                    var Id = rentCarRef.Id.ToString();
+                    var rentCar = await rentCarCollection.Find(p => p.ID == Id).FirstOrDefaultAsync();
+                    if (rentCar != null)
+                        rentCars.Add(rentCar);
+                }
             }
             return rentCars;
         }
+
 
         public async Task<List<TestDrive>> GetTestDrives(string userID)
         {
