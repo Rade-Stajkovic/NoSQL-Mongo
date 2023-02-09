@@ -34,7 +34,7 @@ namespace NBP___Mongo.Services
             {
                 if (c.RentOrSale == true) return 0;
 
-                TestDrive testt = await testCollection.Find(p => p.Car.Id == CarID && p.TestDate.Date == TestDate.Date).FirstOrDefaultAsync();
+                TestDrive testt = await testCollection.Find(p => p.Car.Id == CarID && p.TestDate.CompareTo(TestDate) == 0).FirstOrDefaultAsync();
 
                 if (testt != null) return -1;
 

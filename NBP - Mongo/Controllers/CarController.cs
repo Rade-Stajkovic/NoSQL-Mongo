@@ -172,7 +172,7 @@ namespace NBP___Mongo.Controllers
         {
             try
             {
-                List<Car> list = await carService.GetCars();
+                var list = await carService.GetCars();
 
                 return Ok(list);
             }
