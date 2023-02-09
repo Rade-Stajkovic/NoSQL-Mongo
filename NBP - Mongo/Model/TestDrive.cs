@@ -20,6 +20,6 @@ namespace NBP___Mongo.Model
 
         public Car Car { get; set; }
 
-        public Dealer Dealer { get; set; }
+        public MongoDBRef Dealer { get; set; }
     }
 }

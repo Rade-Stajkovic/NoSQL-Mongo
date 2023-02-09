@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDbContext;
 using NBP___Mongo.Model;
 using NBP___Mongo.Services;
@@ -23,10 +24,17 @@ namespace NBP___Mongo.Controllers
       
         [HttpGet]
         [Route("GetDealersRentals/{DealerID}")]
-        public async Task<IActionResult> GetDealersRentals(string DealerID)
+        public async Task<ActionResult> GetDealersRentals(string DealerID)
         {
-            List<RentCar> list = await _rentCarService.GetDealersRentals(DealerID);
-            return new JsonResult(list);
+            try
+            {
+                List<RentCar> list = await _rentCarService.GetDealersRentals(DealerID);
+                return Ok(await _rentCarService.GetDealersRentals(DealerID));
+            }
+            catch(Exception e)
+            {
+                throw;
+            }
         }
 
         [HttpPost]

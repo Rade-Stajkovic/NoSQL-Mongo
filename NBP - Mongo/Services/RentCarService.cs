@@ -62,7 +62,12 @@ namespace NBP___Mongo.Services
                     await rentcarCollection.InsertOneAsync(rent);
 
                     u.RentCars.Add(new MongoDBRef("rentCar", rent.ID));
+
                      await userCollection.ReplaceOneAsync(p => p.ID == UserID, u);
+
+
+                    
+
                     return true;
                 }
 
@@ -98,9 +103,20 @@ namespace NBP___Mongo.Services
 
         public async Task<List<RentCar>> GetDealersRentals(string DealerID)
         {
-            List<RentCar> rentals = new List<RentCar>();
-            rentals = await rentcarCollection.Find(p => p.Dealer.Id == DealerID).ToListAsync();
-            return rentals;
+            try
+            {
+                var rentCars = new List<RentCar>(); 
+                var result = await rentcarCollection.Find(p=>p.Dealer.Id == DealerID).ToListAsync();
+                foreach (var rentCar in result)
+                {
+                    rentCars.Add(rentCar);
+                }
+                return rentCars;
+            }
+            catch(Exception e)
+            {
+                throw;
+            }
 
         }
 
