@@ -129,7 +129,11 @@ namespace NBP___Mongo.Services
         //    return true;
         //}
 
-        public async Task<List<RentCar>> GetRentCars(string dealerId, bool RentOrSale)
+
+
+
+        public async Task<List<RentCar>> GetRentCars(string dealerId,bool RentOrSale)
+
         {
             var filter = Builders<RentCar>.Filter.And(
                Builders<RentCar>.Filter.Eq(rentcar => rentcar.Dealer.Id, dealerId),

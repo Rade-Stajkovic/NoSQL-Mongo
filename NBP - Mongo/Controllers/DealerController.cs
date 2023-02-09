@@ -72,9 +72,11 @@ namespace NBP___Mongo.Controllers
 
         [HttpGet]
         [Route("GetDealersTestDrives/{DealerID}/{RentOrSale}")]
+
         public async Task<IActionResult> GetDealersTestDrives(string DealerID, bool RentOrSale)
         {
             List<TestDrive> list = await dealerService.GetDealersTestDrives(DealerID, RentOrSale);
+
             IActionResult result = Ok(list);
             return result;
         }
@@ -82,9 +84,12 @@ namespace NBP___Mongo.Controllers
 
         [HttpGet]
         [Route("GetRentCars/{dealerId}/{RentOrSale}")]
+
         public async Task<IActionResult> GetRentCars(string dealerId, bool RentOrSale)
         {
-            List<RentCar> list = await dealerService.GetRentCars(dealerId, RentOrSale);
+          
+            List<RentCar> list = await dealerService.GetRentCars(dealerId,RentOrSale);
+
             IActionResult result = Ok(list);
             return result;
         }

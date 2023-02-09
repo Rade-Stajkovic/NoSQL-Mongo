@@ -23,9 +23,11 @@ namespace NBP___Mongo.Controllers
         [Route("MakeTestDrive/{TestDate}/{CarID}/{DealerID}/{UserID}")]
         public async Task<IActionResult> MakeTestDrive(DateTime TestDate, string CarID, string DealerID, string UserID)
         {
-            bool status = await _testDriveService.MakeTestDrive(TestDate, CarID, DealerID, UserID);
-            if (status) return Ok("Succesfully created test drive!");
-            return BadRequest("Error");
+            int status = await _testDriveService.MakeTestDrive(TestDate, CarID, DealerID, UserID);
+            if (status == 0) return BadRequest("Error : You can't make a TestDrive for this car -> This car is not on sale!");
+            if (status == -1) return BadRequest("Error : You can't make a TestDrive for this car -> This car is already booked that day!");
+            if (status == -2) return BadRequest("Error : We couldn't find Dealer or Car!");
+            return Ok("Successfully created TestDrive for Car: "+CarID);
         }
 
         [HttpDelete]

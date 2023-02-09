@@ -36,6 +36,7 @@ namespace NBP___Mongo.Services
             bool found = false;
             if(d!=null && c!=null)
             {
+                if(c.RentOrSale == false)
                 foreach(MongoDBRef carRef in d.Cars.ToList())
                 {
                     //checking if the dealer really is dealer of that car

@@ -79,8 +79,12 @@ namespace NBP___Mongo.Services
             {
                 foreach (var rentCarRef in user.RentCars)
                 {
-                    var Id = rentCarRef.Id.ToString();
-                    var rentCar = await rentCarCollection.Find(p => p.ID == Id).FirstOrDefaultAsync();
+
+                   
+
+                    var ID = rentCarRef.Id.ToString();
+                    var rentCar = await rentCarCollection.Find(p => p.ID == ID).FirstOrDefaultAsync();
+
                     if (rentCar != null)
                         rentCars.Add(rentCar);
                 }
