@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace NBP___Mongo.Model
         public String Name { get; set; }
 
         [JsonIgnore]
-        public Mark Mark { get; set; }
+        public MongoDBRef Mark { get; set; }
 
 
 

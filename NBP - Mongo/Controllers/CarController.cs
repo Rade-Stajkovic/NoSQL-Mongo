@@ -22,11 +22,11 @@ namespace NBP___Mongo.Controllers
 
         [HttpPost]
         [Route("AddCar")]
-        public async Task<IActionResult> AddCar(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool available)
+        public async Task<IActionResult> AddCar(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool available, bool rentOrSale)
         {
             try
             {
-                var rez = await carService.AddNewCarAsync(description, year, interiorColor, exteriorColor, nameMark, nameModel, engineId, price, available);
+                var rez = await carService.AddNewCarAsync(description, year, interiorColor, exteriorColor, nameMark, nameModel, engineId, price, available, rentOrSale);
                 if (rez)
                 {
                     return Ok("Uspesno dodat automobil");
@@ -59,6 +59,7 @@ namespace NBP___Mongo.Controllers
             }
         }
 
+        // Mark
         [HttpPost]
         [Route("AddMark")]
         public async Task<IActionResult> AddMark(String name, String origin)
@@ -74,6 +75,27 @@ namespace NBP___Mongo.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetMarka")]
+
+        public async Task<IActionResult> GetMarks()
+        {
+            try
+            {
+                List<Mark> marks = await carService.GetAllMarks();
+
+                return Ok(marks);
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
+
+
+        /// CarModel
+
         [HttpPost]
         [Route("AddModel")]
         public async Task<IActionResult> AddModel(String name)
@@ -85,6 +107,24 @@ namespace NBP___Mongo.Controllers
             }
             catch (Exception e)
             {
+                throw new Exception(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetModelsFromMark/{markId}")]
+
+        public async Task<IActionResult> GetModelsFromMark(String markId)
+        {
+            try
+            {
+                List<CarModel> models = await carService.GetModelsFromMark(markId);
+
+                return Ok(models);
+            }
+            catch (Exception e)
+            {
+
                 throw new Exception(e.Message);
             }
         }

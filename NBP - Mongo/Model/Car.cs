@@ -17,6 +17,7 @@ namespace NBP___Mongo.Model
         public string Id { get; set; }
         public CarModel CarModel { get; set; }
 
+     
         public Mark Mark { get; set; }
 
         public  String ExteriorColor { get; set; }
@@ -25,13 +26,16 @@ namespace NBP___Mongo.Model
 
         public String Drivetrain  { get; set; }
 
-        public EngineType EngineType { get; set; }
+        [JsonIgnore]
+        public MongoDBRef EngineType { get; set; }
 
         public String Description { get; set; }
 
         public String Year { get; set; }
 
         public double Price { get; set; }
+
+        public bool RentOrSale { get; set; }
 
         public bool Available { get; set; }
         
