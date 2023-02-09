@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+
+
 using NBP___Mongo.DBClient;
 using NBP___Mongo.Model;
 using MongoDB.Driver.Linq;
@@ -18,6 +20,8 @@ namespace NBP___Mongo.Services
         private readonly IMongoCollection<EngineType> engineCollection;
         private readonly IMongoCollection<Review> reviewCollection;
         private readonly IMongoCollection<User> userCollection;
+        private IMongoDatabase database;
+
 
 
 
@@ -31,6 +35,7 @@ namespace NBP___Mongo.Services
             this.engineCollection = dbClient.GetEngineTypeCollection();
             this.reviewCollection = dbClient.GetReviewCollection();
             this.userCollection = dbClient.GetUserCollection();
+            this.database = dbClient.GetMongoDB();
 
 
 
@@ -53,7 +58,7 @@ namespace NBP___Mongo.Services
             {
                 Mark = mark,
                 CarModel = model,
-                EngineType = new MongoDBRef("engine", engine.Id),
+                EngineType = engine,
                 ExteriorColor = exteriorColor,
                 InteriorColor = interiorColor,
                 Description = description,
@@ -199,13 +204,17 @@ namespace NBP___Mongo.Services
             
         }
 
-        public async Task<List<Car>> GetCarsWithFilters(String markName, String modelName, double maxPrice, String fuelType)
+        public async Task<List<Car>> GetCarsWithFilters(String markName, String modelName, double maxPrice, String fuelType,bool rentOrSale)
         {
             
-
-
-            return await carCollection.Find(c => (maxPrice != 0)? c.Price  < maxPrice : true && (markName !="")?c.Mark.Name == markName:true && (modelName != "") ? c.CarModel.Name == modelName : true && c.Available).ToListAsync();
-
+           
+            return await carCollection.Find(c => (maxPrice != 0)? c.Price  < maxPrice : true
+                                            && (markName !="")?c.Mark.Name == markName:true
+                                            && (modelName != "") ? c.CarModel.Name == modelName : true 
+                                            && c.RentOrSale == rentOrSale 
+                                            && (fuelType !="")? c.EngineType.FuelType == fuelType: true
+                                            && c.Available).ToListAsync();
+        
 
         }
 

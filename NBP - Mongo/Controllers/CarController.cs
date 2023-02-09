@@ -185,13 +185,13 @@ namespace NBP___Mongo.Controllers
 
 
         [HttpGet]
-        [Route("GetCarsWithFilters/{markName}/{modelName}/{maxPrice}/{fuelType}")]
+        [Route("GetCarsWithFilters/{markName}/{modelName}/{maxPrice}/{fuelType}/{rentOrSale}")]
 
-        public async Task<IActionResult> GerCarsWithFilters(String markName, String modelName, double maxPrice, String fuelType)
+        public async Task<IActionResult> GerCarsWithFilters(String markName, String modelName, double maxPrice, String fuelType, bool rentOrSale)
         {
             try
             {
-                List<Car> list = await carService.GetCarsWithFilters(markName, modelName, maxPrice, fuelType);
+                List<Car> list = await carService.GetCarsWithFilters(markName, modelName, maxPrice, fuelType, rentOrSale);
 
                 return Ok(list);
             }

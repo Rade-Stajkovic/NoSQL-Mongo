@@ -26,8 +26,8 @@ namespace NBP___Mongo.Model
 
         public String Drivetrain  { get; set; }
 
-        [JsonIgnore]
-        public MongoDBRef EngineType { get; set; }
+     
+        public EngineType EngineType { get; set; }
 
         [JsonIgnore]
 

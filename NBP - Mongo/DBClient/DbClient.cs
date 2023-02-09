@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace NBP___Mongo.DBClient
 {
     public class DbClient : IDbClient
@@ -12,7 +13,7 @@ namespace NBP___Mongo.DBClient
 
         public MongoClient client;
         public IMongoDatabase database;
-
+        
         public DbClient()
         {
             client = new MongoClient("mongodb+srv://NBP:NBP2023%40@spk-2023.bjooeit.mongodb.net/test");
@@ -65,6 +66,11 @@ namespace NBP___Mongo.DBClient
         public IMongoCollection<Review> GetReviewCollection()
         {
             return database.GetCollection<Review>("reviews");
+        }
+
+        public IMongoDatabase GetMongoDB()
+        {
+            return client.GetDatabase("cardealerDB");
         }
     }
 }

@@ -29,6 +29,7 @@ namespace NBP___Mongo.DBClient
 
         IMongoCollection<Review> GetReviewCollection();
 
+        IMongoDatabase GetMongoDB();
 
 
 
