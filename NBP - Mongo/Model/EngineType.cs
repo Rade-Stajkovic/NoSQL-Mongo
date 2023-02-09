@@ -19,6 +19,8 @@ namespace NBP___Mongo.Model
 
         public int Power { get; set; }
 
+     
+
 
 
 

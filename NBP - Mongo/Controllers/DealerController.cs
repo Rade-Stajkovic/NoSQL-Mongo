@@ -25,11 +25,11 @@ namespace NBP___Mongo.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> CreateUser( string username, string password, string name, string location)
+        public async Task<IActionResult> CreateUser(string username, string password, string name, string location)
         {
             try
             {
-                var result = await dealerService.CreateDealer( username, password, name, location);
+                var result = await dealerService.CreateDealer(username, password, name, location);
                 if (result == "Uspešno kreiran korisnik.")
                 {
                     return Ok(result);
@@ -71,19 +71,20 @@ namespace NBP___Mongo.Controllers
 
 
         [HttpGet]
-        [Route("GetDealersTestDrives/{DealerID}")]
-        public async Task<IActionResult> GetDealersTestDrives(string DealerID)
+        [Route("GetDealersTestDrives/{DealerID}/{RentOrSale}")]
+        public async Task<IActionResult> GetDealersTestDrives(string DealerID, bool RentOrSale)
         {
-            List<TestDrive> list = await dealerService.GetDealersTestDrives(DealerID);
-            return new JsonResult(list);
+            List<TestDrive> list = await dealerService.GetDealersTestDrives(DealerID, RentOrSale);
+            IActionResult result = Ok(list);
+            return result;
         }
 
 
         [HttpGet]
-        [Route("GetRentCars/{dealerId}")]
-        public async Task<IActionResult> GetRentCars(string dealerId)
+        [Route("GetRentCars/{dealerId}/{RentOrSale}")]
+        public async Task<IActionResult> GetRentCars(string dealerId, bool RentOrSale)
         {
-            List<RentCar> list = await dealerService.GetRentCars(dealerId);
+            List<RentCar> list = await dealerService.GetRentCars(dealerId, RentOrSale);
             IActionResult result = Ok(list);
             return result;
         }
@@ -94,12 +95,12 @@ namespace NBP___Mongo.Controllers
         [Route("AddCarToDealer/{CarID}/{DealerID}")]
         public async Task<IActionResult> AddCarToDealer(string CarID, string DealerID)
         {
-            bool ttt = await dealerService.AddCarToDealer(CarID,DealerID);
+            bool ttt = await dealerService.AddCarToDealer(CarID, DealerID);
             return Ok(ttt);
         }
 
 
-        [HttpPost]
+        [HttpPut]
         [Route("UpdateCarPrice/{id}/{price}/{dealerId}")]
         public async Task<IActionResult> UpdateCarPrice(string id, double price, string dealerId)
         {
@@ -115,20 +116,20 @@ namespace NBP___Mongo.Controllers
         }
 
 
-        [HttpPost]
-        [Route("UpdateCarAvailability/{id}/{available}/{dealerId}")]
-        public async Task<IActionResult> UpdateCarAvailability(string id, bool available, string dealerId)
-        {
-            try
-            {
-                bool a = await dealerService.UpdateCarAvailability(id, available, dealerId);
-                return new JsonResult(a);
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-        }
+        //[HttpPost]
+        //[Route("UpdateCarAvailability/{id}/{available}/{dealerId}")]
+        //public async Task<IActionResult> UpdateCarAvailability(string id, bool available, string dealerId)
+        //{
+        //    try
+        //    {
+        //        bool a = await dealerService.UpdateCarAvailability(id, available, dealerId);
+        //        return new JsonResult(a);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception(e.Message);
+        //    }
+        //}
 
     }
 }

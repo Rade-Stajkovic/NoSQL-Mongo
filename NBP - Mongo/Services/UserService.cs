@@ -95,8 +95,13 @@ namespace NBP___Mongo.Services
             var user = await userCollection.Find(p => p.ID == userID).FirstOrDefaultAsync();
             if (user != null)
             {
-                var testDrivesIds = user.TestDrives.Select(x => x.Id).ToList();
-                testDrives = await testDriveCollection.Find(p => testDrivesIds.Contains(p.ID)).ToListAsync();
+                foreach (var testDriveRef in user.TestDrives)
+                {
+                    var Id = testDriveRef.Id.ToString();
+                    var testDrive = await testDriveCollection.Find(p => p.ID == Id).FirstOrDefaultAsync();
+                    if (testDrive != null)
+                        testDrives.Add(testDrive);
+                }
             }
             return testDrives;
         }

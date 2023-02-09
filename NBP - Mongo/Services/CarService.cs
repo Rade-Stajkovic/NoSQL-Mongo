@@ -29,7 +29,7 @@ namespace NBP___Mongo.Services
 
         }
 
-        public async Task<bool> AddNewCarAsync(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool av)
+        public async Task<bool> AddNewCarAsync(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool av, bool rentOrSale)
         {
             Mark mark = await markCollection.Find(c => c.Name == nameMark).FirstOrDefaultAsync();
             CarModel model = await modelCollection.Find(m => m.Name == nameModel).FirstOrDefaultAsync();
@@ -41,19 +41,20 @@ namespace NBP___Mongo.Services
 
             }
 
-            List<EngineType> list = new List<EngineType>();
-            list.Add(engine);
+         
             Car car = new Car
             {
                 Mark = mark,
                 CarModel = model,
-                EngineTypes = list,
+                EngineType = new MongoDBRef("engine", engine.Id),
                 ExteriorColor = exteriorColor,
                 InteriorColor = interiorColor,
                 Description = description,
                 Year = year,
                 Price = price,
-                Available = av
+                Available = av,
+                RentOrSale = rentOrSale
+                
                
                 
             };
@@ -93,6 +94,12 @@ namespace NBP___Mongo.Services
 
         }
 
+        public async Task<List<Mark>> GetAllMarks()
+        {
+            return await markCollection.Find(f => true).ToListAsync();
+
+        }
+
         public async Task<bool> AddModelToMark(String nameMark, String nameModel)
         {
 
@@ -107,7 +114,7 @@ namespace NBP___Mongo.Services
             }
 
             //
-            model.Mark = mark;
+            model.Mark = new MongoDBRef("mark", mark.Id);
 
            
 
@@ -116,20 +123,21 @@ namespace NBP___Mongo.Services
             var update2 = Builders<CarModel>.Update.Set("Mark", model.Mark);
             await modelCollection.UpdateOneAsync(m => m.Name == model.Name, update2);
 
+            MongoDBRef r = new MongoDBRef("models", model.Id);
+            if (mark.Models == null)
+            {
+                mark.Models = new List<MongoDBRef>();
+              
+                mark.Models.Add(r);
+            }
+            else
+            {
+                mark.Models.Add(r);
+            }
 
-            //if (mark.Models == null)
-            //{
-            //    mark.Models = new List<CarModel>();
-            //    mark.Models.Add(model);
-            //}
-            //else
-            //{
-            //    mark.Models.Add(model);
-            //}
-            
 
-            //var update = Builders<Mark>.Update.Push("Models", JsonSerializer.Serialize(model));
-            //await markCollection.UpdateOneAsync(p => p.Name == mark.Name, update);
+            var update = Builders<Mark>.Update.Set("Models", mark.Models);
+            await markCollection.UpdateOneAsync(p => p.Name == mark.Name, update);
             return true;
         }
 
@@ -148,6 +156,16 @@ namespace NBP___Mongo.Services
 
         }
 
+        public async Task<List<CarModel>> GetModelsFromMark(String markId)
+        {
+            Mark mark = await markCollection.Find(m => m.Id == markId).FirstOrDefaultAsync();
+
+           
+            return await modelCollection.Find(f => f.Mark.Id == mark.Id).ToListAsync();
+
+        }
+
+
         // EngineType service
 
         public async Task AddNewEngine(String fuelType, int power, String displacement)
@@ -165,23 +183,22 @@ namespace NBP___Mongo.Services
 
         }
 
-        public async Task<bool> AddEngineToCar(String carId, String engineId)
+       
+
+        public async Task<List<Car>> GetCars()
         {
-            Car car = await carCollection.Find(c => c.Id == carId).FirstOrDefaultAsync();
-            EngineType engine = await engineCollection.Find(e => e.Id == engineId).FirstOrDefaultAsync();
+            return  await carCollection.Find(c => true).ToListAsync();
 
-            if (car == null || engine == null)
-            {
-                return false;
+            
+        }
 
-            }
+        public async Task<List<Car>> GetCarsWithFilters(String markName, String modelName, double maxPrice, String fuelType)
+        {
+            
 
-            car.EngineTypes.Add(engine);
 
-            var update = Builders<Car>.Update.Set("EngineTypes", car.EngineTypes);
-            await carCollection.UpdateOneAsync(c => c.Id == car.Id, update);
+            return await carCollection.Find(c => (maxPrice != 0)? c.Price  < maxPrice : true && (markName !="")?c.Mark.Name == markName:true && (modelName != "") ? c.CarModel.Name == modelName : true && c.Available).ToListAsync();
 
-            return true;
 
         }
 

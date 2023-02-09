@@ -72,10 +72,13 @@ namespace NBP___Mongo.Services
             return null;
         }
 
-        public async Task<List<TestDrive>> GetDealersTestDrives(string DealerID)
+        public async Task<List<TestDrive>> GetDealersTestDrives(string DealerID, bool RentOrSale)
         {
-            var testDrives = testDriveCollection.AsQueryable().Where(r => r.Dealer.Id == DealerID).ToList();
-            return testDrives;
+            var filter = Builders<TestDrive>.Filter.And(
+              Builders<TestDrive>.Filter.Eq(testdrive => testdrive.Dealer.Id, DealerID),
+              Builders<TestDrive>.Filter.Eq(testdrive => testdrive.Car.RentOrSale, RentOrSale));
+            var result = await testDriveCollection.Find(filter).ToListAsync();
+            return result;
         }
 
         public async Task<bool> AddCarToDealer(string CarID, string DealerID)
@@ -114,21 +117,23 @@ namespace NBP___Mongo.Services
             carsCollection.UpdateOne(filter, update);
             return true;
         }
-        public async Task<bool> UpdateCarAvailability(string id, bool available, string dealerId)
+        //public async Task<bool> UpdateCarAvailability(string id, bool available, string dealerId)
+        //{
+
+        //    var filter = Builders<Car>.Filter.Eq(c => c.Id, id);
+        //    var update = Builders<Car>.Update
+        //        .Set(c => c.Available, available)
+        //        .Set(c => c.Dealer, new MongoDBRef("dealers", dealerId));
+
+        //    carsCollection.UpdateOne(filter, update);
+        //    return true;
+        //}
+
+        public async Task<List<RentCar>> GetRentCars(string dealerId, bool RentOrSale)
         {
-
-            var filter = Builders<Car>.Filter.Eq(c => c.Id, id);
-            var update = Builders<Car>.Update
-                .Set(c => c.Available, available)
-                .Set(c => c.Dealer, new MongoDBRef("dealers", dealerId));
-
-            carsCollection.UpdateOne(filter, update);
-            return true;
-        }
-
-        public async Task<List<RentCar>> GetRentCars(string dealerId)
-        {
-            var filter = Builders<RentCar>.Filter.Eq(rentcar => rentcar.Dealer.Id, dealerId);
+            var filter = Builders<RentCar>.Filter.And(
+               Builders<RentCar>.Filter.Eq(rentcar => rentcar.Dealer.Id, dealerId),
+               Builders<RentCar>.Filter.Eq(rentcar => rentcar.Car.RentOrSale, RentOrSale));
             var result = await rentcarCollection.Find(filter).ToListAsync();
             return result;
         }
