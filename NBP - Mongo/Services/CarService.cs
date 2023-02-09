@@ -16,6 +16,10 @@ namespace NBP___Mongo.Services
         private readonly IMongoCollection<Mark> markCollection;
         private readonly IMongoCollection<CarModel> modelCollection;
         private readonly IMongoCollection<EngineType> engineCollection;
+        private readonly IMongoCollection<Review> reviewCollection;
+        private readonly IMongoCollection<User> userCollection;
+
+
 
 
 
@@ -25,6 +29,9 @@ namespace NBP___Mongo.Services
             this.markCollection = dbClient.GetMarkCollection();
             this.modelCollection = dbClient.GetCarModelCollection();
             this.engineCollection = dbClient.GetEngineTypeCollection();
+            this.reviewCollection = dbClient.GetReviewCollection();
+            this.userCollection = dbClient.GetUserCollection();
+
 
 
         }
@@ -201,6 +208,70 @@ namespace NBP___Mongo.Services
 
 
         }
+
+
+        //Review 
+
+        public async Task<bool> AddNewReview(String text, String userId, String carId)
+        {
+            Car car = await carCollection.Find(c => c.Id == carId).FirstOrDefaultAsync();
+            User user = await userCollection.Find(u => u.ID == userId).FirstOrDefaultAsync();
+
+            if (car == null || user == null )
+            {
+                return false;
+
+            }
+
+            Review review = new Review
+            {
+                Text = text,
+                Car =  new MongoDBRef("car", carId),
+                User = new MongoDBRef("user", userId)
+            };
+
+
+
+            await reviewCollection.InsertOneAsync(review);
+
+            car.Reviews.Add(new MongoDBRef("review", review.Id));
+            user.MyReviews.Add(new MongoDBRef ("myreview", review.Id));
+
+            var update = Builders<Car>.Update.Set("Reviews", car.Reviews);
+            var update2 = Builders<User>.Update.Set("MyReviews", user.MyReviews);
+
+            await carCollection.UpdateOneAsync(p => p.Id == car.Id, update);
+            await userCollection.UpdateOneAsync(p => p.ID == user.ID, update2);
+
+
+
+
+            return true;
+
+        }
+
+        public async Task<bool> DeleteReview(String id)
+        {
+            Review review = await reviewCollection.Find(c => c.Id == id).FirstOrDefaultAsync();
+
+            if (review == null)
+            {
+
+                return false;
+            }
+            await reviewCollection.DeleteOneAsync(c => c.Id == id);
+            return true;
+        }
+
+        public async Task<List<Review>> GetReviewsForCar(String carId)
+        {
+            return await reviewCollection.Find(r => r.Car.Id == carId).ToListAsync();
+        }
+
+
+        
+
+
 
     }
 }

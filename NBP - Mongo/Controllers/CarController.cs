@@ -203,5 +203,61 @@ namespace NBP___Mongo.Controllers
         }
 
 
+        // Reviews
+
+        [HttpPost]
+        [Route("AddReview/{userId}/{carId}/{text}")]
+
+        public async Task<IActionResult> AddReview(String userId, String carId, String text)
+        {
+            try
+            {
+                await carService.AddNewReview(text, userId, carId);
+                return Ok("Uspesno dodat review");
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("DeleteReview/{reviewId}")]
+
+        public async Task<IActionResult> DeleteReview(String reviewId)
+        {
+            try
+            {
+                bool rez = await carService.DeleteReview(reviewId);
+                if (rez)
+                {
+                    return Ok("Uspesno obrisano");
+                }
+                return BadRequest("Greska");
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetReviewsForCar/{carId}")]
+
+        public async Task<IActionResult> GetReviewsForCar(String carId)
+        {
+            try
+            {
+                List<Review> list = await carService.GetReviewsForCar(carId);
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

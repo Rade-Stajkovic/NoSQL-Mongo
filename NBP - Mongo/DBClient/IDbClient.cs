@@ -27,6 +27,9 @@ namespace NBP___Mongo.DBClient
 
         IMongoCollection<TestDrive> GetTestDriveCollection();
 
+        IMongoCollection<Review> GetReviewCollection();
+
+
 
 
 

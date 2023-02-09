@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
-
+using System.Text.Json.Serialization;
 
 namespace NBP___Mongo.Model
 {
@@ -21,10 +21,16 @@ namespace NBP___Mongo.Model
         public List<MongoDBRef> RentCars { get; set; }
         public List<MongoDBRef> TestDrives { get; set; }
 
+        [JsonIgnore]
+        public List<MongoDBRef> MyReviews { get; set; }
+
+
+
         public User()
         {
             RentCars = new List<MongoDBRef>();
             TestDrives = new List<MongoDBRef>();
+            MyReviews = new List<MongoDBRef>();
         }
         
     }

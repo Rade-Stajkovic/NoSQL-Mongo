@@ -29,6 +29,10 @@ namespace NBP___Mongo.Model
         [JsonIgnore]
         public MongoDBRef EngineType { get; set; }
 
+        [JsonIgnore]
+
+        public List<MongoDBRef> Reviews { get; set; }
+
         public String Description { get; set; }
 
         public String Year { get; set; }
@@ -42,7 +46,12 @@ namespace NBP___Mongo.Model
         [JsonIgnore]
         public MongoDBRef Dealer{ get; set; }
 
-       
+        public Car()
+        {
+          
+            Reviews = new List<MongoDBRef>();
+
+        }
 
 
     }
