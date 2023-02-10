@@ -40,8 +40,11 @@ namespace NBP___Mongo.Services
                 List<RentCar> rentals = await rentcarCollection.Find(p => p.Car.Id == CarID && p.Allowed == true).ToListAsync();
                 foreach(RentCar rental in rentals)
                 {
-                    int startCompare = OccupiedFrom.CompareTo(rental.OccupiedFrom);
-                    int endCompare = OccupiedUntill.CompareTo(rental.OccupiedUntill);
+                    //problem u mozgu koji ima MongoDb Server!!!
+                    DateTime cmp1 = rental.OccupiedFrom.AddDays(1).Date;
+                    DateTime cmp2 = rental.OccupiedUntill.AddDays(1).Date;
+                    int startCompare = OccupiedFrom.Date.CompareTo(cmp1);
+                    int endCompare = OccupiedUntill.Date.CompareTo(cmp2);
 
                     if((startCompare >= 0 && endCompare <= 0) || (startCompare <= 0 && endCompare >= 0))
                     {
@@ -77,21 +80,11 @@ namespace NBP___Mongo.Services
                     u.RentCars.Add(new MongoDBRef("rentCar", rent.ID));
                     var update = Builders<User>.Update.Set("RentCars", u.RentCars);
                     await userCollection.UpdateManyAsync(p => p.ID == UserID, update);
-
-                   
-
-
-                    
-
-
-                 
                     return 1;
 
                 }
 
             }
-
-            
             return -2;
         }
 
@@ -136,6 +129,23 @@ namespace NBP___Mongo.Services
                 throw;
             }
 
+        }
+
+        public async Task<bool> DicardRentCar(string RentCarID)
+        {
+            RentCar r = await rentcarCollection.Find(p => p.ID == RentCarID).FirstOrDefaultAsync();
+            await rentcarCollection.DeleteOneAsync(p => p.ID == RentCarID);
+
+            List<User> users = await userCollection.Find(p => p.TestDrives.Contains(new MongoDBRef("rentCar", RentCarID))).ToListAsync();
+
+            foreach (var user in users)
+            {
+                user.RentCars.Remove(new MongoDBRef("rentCar", RentCarID));
+                var update = Builders<User>.Update.Set("RentCars", user.RentCars);
+                await userCollection.UpdateManyAsync(p => p.ID == user.ID, update);
+            }
+
+            return true;
         }
 
     }

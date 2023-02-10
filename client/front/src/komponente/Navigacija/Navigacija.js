@@ -51,49 +51,11 @@ const Navigacija = (props) =>
   const [message, setMessage] = useState('');
   
  
-  if(user){
-  const connection = new signalR.HubConnectionBuilder()
-  .withUrl("https://localhost:44332/producthub")
-  .build();
 
-  console.log(user.userName);
-  
-  connection.on("ProductNotification", (productId) => {
-     
-   
-      let obj = JSON.parse(productId);
-      console.log(obj);
-      setMessage(obj);
-     
-    
-
-  });
-
-   connection.start();
-  }
   
 
 
-  async function searchh()
-  {
-    let search = await fetch("https://localhost:44332/Product/SearchProducts/"+param ,
-    {
-      method: 'GET',
-        headers: {
-
-            "Content-type": "application/json;charset=UTF-8",
-
-        }
-    } ).then(Response=>{
-      return Response.json();
-    }).then((data)=>{
-      const pro ={
-        ...data[0],
-      }
-      console.log(pro);
-      setSearch(pro);
-    });
-  }
+ 
 
   console.log(user);
   useEffect(()=>{
@@ -247,11 +209,7 @@ const Navigacija = (props) =>
 
           
           
-          {delivery_info ? (<></>):
-          (<><form className='d-flex input-group w-auto'>
-            <input type='search' className='form-control' placeholder='Pretraži' aria-label='Search' onChange={(e)=>{setparam(e.target.value)}} />
-            <Button color='primary'><MDBIcon fas icon="search" onClick={searchh} /></Button>
-          </form></>)}
+          
 
           
 

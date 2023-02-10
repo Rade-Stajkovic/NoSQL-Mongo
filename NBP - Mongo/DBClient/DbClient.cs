@@ -50,7 +50,7 @@ namespace NBP___Mongo.DBClient
 
         public IMongoDatabase GetMongoDB()
         {
-            throw new NotImplementedException();
+            return database;
         }
 
         public IMongoCollection<RentCar> GetRentCarCollection()
@@ -60,7 +60,7 @@ namespace NBP___Mongo.DBClient
 
         public IMongoCollection<Review> GetReviewCollection()
         {
-            throw new NotImplementedException();
+            return database.GetCollection<Review>("reviews");
         }
 
         public IMongoCollection<TestDrive> GetTestDriveCollection()
@@ -72,6 +72,8 @@ namespace NBP___Mongo.DBClient
         {
             return database.GetCollection<User>("users");
         }
+
+
 
     }
 }
