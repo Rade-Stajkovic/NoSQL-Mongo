@@ -73,5 +73,7 @@ namespace NBP___Mongo.DBClient
             return database.GetCollection<User>("users");
         }
 
+
+
     }
 }
