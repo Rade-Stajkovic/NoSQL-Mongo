@@ -75,7 +75,7 @@ namespace NBP___Mongo.Controllers
 
         public async Task<IActionResult> GetDealersTestDrives(string DealerID, bool RentOrSale)
         {
-<<<<<<< HEAD
+
             try
             {
 
@@ -89,12 +89,7 @@ namespace NBP___Mongo.Controllers
             }
 
 
-=======
-            List<TestDrive> list = await dealerService.GetDealersTestDrives(DealerID, RentOrSale);
 
-            IActionResult result = Ok(list);
-            return result;
->>>>>>> a239fb6017e70250c56d4928a1aa0217c84f8b3f
         }
 
 

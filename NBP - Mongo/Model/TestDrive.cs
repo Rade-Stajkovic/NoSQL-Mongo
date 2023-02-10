@@ -23,7 +23,7 @@ namespace NBP___Mongo.Model
         public Car Car { get; set; }
         [JsonIgnore]
 
-        [JsonIgnore]
+       
         public MongoDBRef Dealer { get; set; }
     }
 }

@@ -29,6 +29,7 @@ namespace NBP___Mongo.Services
             this.dealerCollection = dbClient.GetDealerCollection();
             this.carsCollection = dbClient.GetCarCollection();
             this.rentcarCollection = dbClient.GetRentCarCollection();
+            this.testDriveCollection = dbClient.GetTestDriveCollection();
         }
 
 
