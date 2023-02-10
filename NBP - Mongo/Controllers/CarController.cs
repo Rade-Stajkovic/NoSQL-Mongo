@@ -172,7 +172,7 @@ namespace NBP___Mongo.Controllers
         {
             try
             {
-                List<Car> list = await carService.GetCars();
+                var list = await carService.GetCars();
 
                 return Ok(list);
             }
@@ -185,13 +185,13 @@ namespace NBP___Mongo.Controllers
 
 
         [HttpGet]
-        [Route("GetCarsWithFilters/{markName}/{modelName}/{maxPrice}/{fuelType}")]
+        [Route("GetCarsWithFilters/{markName}/{modelName}/{maxPrice}/{fuelType}/{rentOrSale}")]
 
-        public async Task<IActionResult> GerCarsWithFilters(String markName, String modelName, double maxPrice, String fuelType)
+        public async Task<IActionResult> GerCarsWithFilters(String markName, String modelName, double maxPrice, String fuelType, bool rentOrSale)
         {
             try
             {
-                List<Car> list = await carService.GetCarsWithFilters(markName, modelName, maxPrice, fuelType);
+                List<Car> list = await carService.GetCarsWithFilters(markName, modelName, maxPrice, fuelType, rentOrSale);
 
                 return Ok(list);
             }
@@ -203,5 +203,61 @@ namespace NBP___Mongo.Controllers
         }
 
 
+        // Reviews
+
+        [HttpPost]
+        [Route("AddReview/{userId}/{carId}/{text}")]
+
+        public async Task<IActionResult> AddReview(String userId, String carId, String text)
+        {
+            try
+            {
+                await carService.AddNewReview(text, userId, carId);
+                return Ok("Uspesno dodat review");
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("DeleteReview/{reviewId}")]
+
+        public async Task<IActionResult> DeleteReview(String reviewId)
+        {
+            try
+            {
+                bool rez = await carService.DeleteReview(reviewId);
+                if (rez)
+                {
+                    return Ok("Uspesno obrisano");
+                }
+                return BadRequest("Greska");
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetReviewsForCar/{carId}")]
+
+        public async Task<IActionResult> GetReviewsForCar(String carId)
+        {
+            try
+            {
+                List<Review> list = await carService.GetReviewsForCar(carId);
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
     }
 }
