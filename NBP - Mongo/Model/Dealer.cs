@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace NBP___Mongo.Model
 {
@@ -19,6 +20,7 @@ namespace NBP___Mongo.Model
         public string Password { get; set; }
         public string Location { get; set; }
 
+        [JsonIgnore]
         public List<MongoDBRef> Cars { get; set; }
         
 

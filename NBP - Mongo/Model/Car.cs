@@ -46,12 +46,14 @@ namespace NBP___Mongo.Model
         [JsonIgnore]
         public MongoDBRef Dealer{ get; set; }
 
+
         public Car()
         {
           
             Reviews = new List<MongoDBRef>();
 
         }
+
 
 
     }

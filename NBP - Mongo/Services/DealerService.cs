@@ -29,6 +29,7 @@ namespace NBP___Mongo.Services
             this.dealerCollection = dbClient.GetDealerCollection();
             this.carsCollection = dbClient.GetCarCollection();
             this.rentcarCollection = dbClient.GetRentCarCollection();
+            this.testDriveCollection = dbClient.GetTestDriveCollection();
         }
 
 
@@ -39,7 +40,7 @@ namespace NBP___Mongo.Services
             //{
             //    cars.Add(new MongoDBRef("cars", carId));
             //}
-            var dealer = dealerCollection.Find(p => p.Username == username).FirstOrDefaultAsync();
+            var dealer = await dealerCollection.Find(p => p.Username == username).FirstOrDefaultAsync();
             if (dealer != null)
             {
                 return "Korisnik sa tim korisničkim imenom već postoji.";
@@ -129,7 +130,11 @@ namespace NBP___Mongo.Services
         //    return true;
         //}
 
+
+
+
         public async Task<List<RentCar>> GetRentCars(string dealerId,bool RentOrSale)
+
         {
             var filter = Builders<RentCar>.Filter.And(
                Builders<RentCar>.Filter.Eq(rentcar => rentcar.Dealer.Id, dealerId),
