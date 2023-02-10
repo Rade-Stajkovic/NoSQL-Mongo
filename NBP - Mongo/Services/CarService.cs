@@ -20,7 +20,7 @@ namespace NBP___Mongo.Services
         private readonly IMongoCollection<EngineType> engineCollection;
         private readonly IMongoCollection<Review> reviewCollection;
         private readonly IMongoCollection<User> userCollection;
-        private IMongoDatabase database;
+  
 
 
 
@@ -35,7 +35,7 @@ namespace NBP___Mongo.Services
             this.engineCollection = dbClient.GetEngineTypeCollection();
             this.reviewCollection = dbClient.GetReviewCollection();
             this.userCollection = dbClient.GetUserCollection();
-            this.database = dbClient.GetMongoDB();
+          
 
 
 
