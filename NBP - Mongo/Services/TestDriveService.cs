@@ -63,7 +63,7 @@ namespace NBP___Mongo.Services
                     await testCollection.InsertOneAsync(test);
 
                     u.RentCars.Add(new MongoDBRef("testDrive", test.ID));
-                    var update = Builders<User>.Update.Set("TestDrives", u.RentCars);
+                    var update = Builders<User>.Update.Set("TestDrives", u.TestDrives);
                     await userCollection.UpdateManyAsync(p => p.ID == UserID, update);
                     return 1;
                 }
