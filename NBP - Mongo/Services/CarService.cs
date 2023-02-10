@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using MongoDB.Driver;
-
-
+using NBP___Mongo.Services.Files;
 using NBP___Mongo.DBClient;
 using NBP___Mongo.Model;
 using MongoDB.Driver.Linq;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Xml.Linq;
 
 namespace NBP___Mongo.Services
 {
@@ -23,14 +25,15 @@ namespace NBP___Mongo.Services
         private readonly IDbClient dbClient;
         private readonly IMongoCollection<RentCar> rentCollection;
         private readonly IMongoCollection<TestDrive> testCollection;
+        private readonly IMongoCollection<Dealer> dealerCollection;
         private IMongoDatabase database;
+        private IWebHostEnvironment _webHost;
 
 
 
 
 
-
-        public CarService(IDbClient dbClient)
+        public CarService(IDbClient dbClient, IWebHostEnvironment hostingEnvironment)
         {
             this.carCollection = dbClient.GetCarCollection();
             this.markCollection = dbClient.GetMarkCollection();
@@ -42,11 +45,12 @@ namespace NBP___Mongo.Services
             this.testCollection = dbClient.GetTestDriveCollection();
             this.database = dbClient.GetMongoDB();
             this.dbClient = dbClient;
-
+            this.dealerCollection = dbClient.GetDealerCollection();
+            this._webHost = hostingEnvironment;
 
         }
 
-        public async Task<bool> AddNewCarAsync(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool av, bool rentOrSale)
+        public async Task<bool> AddNewCarAsync(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool av, bool rentOrSale, FileUpload file)
         {
             Mark mark = await markCollection.Find(c => c.Name == nameMark).FirstOrDefaultAsync();
             CarModel model = await modelCollection.Find(m => m.Name == nameModel).FirstOrDefaultAsync();
@@ -57,6 +61,8 @@ namespace NBP___Mongo.Services
                 return false;
 
             }
+
+
 
          
             Car car = new Car
@@ -77,6 +83,21 @@ namespace NBP___Mongo.Services
             };
 
             await carCollection.InsertOneAsync(car);
+
+            if (file.file.Length > 0)
+            {
+                string path = _webHost.WebRootPath + "\\CarsPictures\\";
+                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                string newname = car.Id.ToString() + System.IO.Path.GetExtension(file.file.FileName);
+                using (FileStream fileStream = System.IO.File.Create(path + newname))
+                {
+                    file.file.CopyTo(fileStream);
+                    fileStream.Flush();
+                }
+                car.Picture = newname;
+            }
+
+            else car.Picture = "def.jpg";
             return true;
         
         }
@@ -113,7 +134,16 @@ namespace NBP___Mongo.Services
                     }
                 }
             }
+            List<Dealer> list = await dealerCollection.Find(p=>true).ToListAsync();
+            Dealer d = await dealerCollection.Find(p => p.ID == car.Dealer.Id.ToString()).FirstOrDefaultAsync();
+            if (d != null)
+            {
+                d.Cars.Remove(new MongoDBRef("cars", car.Id));
+                var update = Builders<Dealer>.Update.Set("Cars", d.Cars);
+                await dealerCollection.UpdateManyAsync(p => p.ID == car.Dealer.Id, update);
+            }
             await carCollection.DeleteOneAsync(c => c.Id == id);
+
             return true;
         }
 

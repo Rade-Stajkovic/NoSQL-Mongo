@@ -69,6 +69,7 @@ namespace NBP___Mongo
             {
                 endpoints.MapControllers();
             });
+            app.UseStaticFiles();
         }
     }
 }

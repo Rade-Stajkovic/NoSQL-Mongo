@@ -19,9 +19,5 @@ namespace NBP___Mongo.Model
 
         [JsonIgnore]
         public MongoDBRef Mark { get; set; }
-
-
-
-
     }
 }

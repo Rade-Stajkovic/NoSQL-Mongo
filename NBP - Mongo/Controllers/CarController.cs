@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using NBP___Mongo.Services.Files;
 namespace NBP___Mongo.Controllers
 {
     [ApiController]
@@ -22,11 +22,11 @@ namespace NBP___Mongo.Controllers
 
         [HttpPost]
         [Route("AddCar")]
-        public async Task<IActionResult> AddCar(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool available, bool rentOrSale)
+        public async Task<IActionResult> AddCar(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool available, bool rentOrSale, [FromForm] FileUpload file)
         {
             try
             {
-                var rez = await carService.AddNewCarAsync(description, year, interiorColor, exteriorColor, nameMark, nameModel, engineId, price, available, rentOrSale);
+                var rez = await carService.AddNewCarAsync(description, year, interiorColor, exteriorColor, nameMark, nameModel, engineId, price, available, rentOrSale, file);
                 if (rez)
                 {
                     return Ok("Uspesno dodat automobil");

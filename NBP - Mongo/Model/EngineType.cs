@@ -18,13 +18,5 @@ namespace NBP___Mongo.Model
         public String Displacement { get; set; }
 
         public int Power { get; set; }
-
-     
-
-
-
-
-
-
     }
 }

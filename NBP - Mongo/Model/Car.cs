@@ -46,6 +46,7 @@ namespace NBP___Mongo.Model
         [JsonIgnore]
         public MongoDBRef Dealer{ get; set; }
 
+        public string Picture;
 
         public Car()
         {
