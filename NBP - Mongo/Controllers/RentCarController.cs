@@ -48,6 +48,15 @@ namespace NBP___Mongo.Controllers
             return Ok("Successfully created rental for Car: " + CarID);
         }
 
+        [HttpDelete]
+        [Route("DicardRentCar/{RentCarID}")]
+        public async Task<IActionResult> DicardRentCar(string RentCarID)
+        {
+            bool status = await _rentCarService.DicardRentCar(RentCarID);
+            if (status) return Ok("Succesfully discard rental!");
+            return BadRequest("Error");
+        }
+
         [HttpPut]
         [Route("AllowRental/{RentalID}")]
         public async Task<IActionResult> AllowRental(string RentalID)

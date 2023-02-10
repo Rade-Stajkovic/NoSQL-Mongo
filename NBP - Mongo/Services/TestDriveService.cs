@@ -84,7 +84,7 @@ namespace NBP___Mongo.Services
             foreach (var user in users)
             {
                 user.TestDrives.Remove(new MongoDBRef("testDrive", TestDriveID));
-                var update = Builders<User>.Update.Set("TestDrives", user.RentCars);
+                var update = Builders<User>.Update.Set("TestDrives", user.TestDrives);
                 await userCollection.UpdateManyAsync(p => p.ID == user.ID, update);
             }
 

@@ -77,21 +77,11 @@ namespace NBP___Mongo.Services
                     u.RentCars.Add(new MongoDBRef("rentCar", rent.ID));
                     var update = Builders<User>.Update.Set("RentCars", u.RentCars);
                     await userCollection.UpdateManyAsync(p => p.ID == UserID, update);
-
-                   
-
-
-                    
-
-
-                 
                     return 1;
 
                 }
 
             }
-
-            
             return -2;
         }
 
@@ -136,6 +126,23 @@ namespace NBP___Mongo.Services
                 throw;
             }
 
+        }
+
+        public async Task<bool> DicardRentCar(string RentCarID)
+        {
+            RentCar r = await rentcarCollection.Find(p => p.ID == RentCarID).FirstOrDefaultAsync();
+            await rentcarCollection.DeleteOneAsync(p => p.ID == RentCarID);
+
+            List<User> users = await userCollection.Find(p => p.TestDrives.Contains(new MongoDBRef("rentCar", RentCarID))).ToListAsync();
+
+            foreach (var user in users)
+            {
+                user.RentCars.Remove(new MongoDBRef("rentCar", RentCarID));
+                var update = Builders<User>.Update.Set("RentCars", user.RentCars);
+                await userCollection.UpdateManyAsync(p => p.ID == user.ID, update);
+            }
+
+            return true;
         }
 
     }

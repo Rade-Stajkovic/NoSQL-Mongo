@@ -20,6 +20,9 @@ namespace NBP___Mongo.Services
         private readonly IMongoCollection<EngineType> engineCollection;
         private readonly IMongoCollection<Review> reviewCollection;
         private readonly IMongoCollection<User> userCollection;
+        private readonly IDbClient dbClient;
+        private readonly IMongoCollection<RentCar> rentCollection;
+        private readonly IMongoCollection<TestDrive> testCollection;
         private IMongoDatabase database;
 
 
@@ -33,10 +36,12 @@ namespace NBP___Mongo.Services
             this.markCollection = dbClient.GetMarkCollection();
             this.modelCollection = dbClient.GetCarModelCollection();
             this.engineCollection = dbClient.GetEngineTypeCollection();
-           this.reviewCollection = dbClient.GetReviewCollection();
+            this.reviewCollection = dbClient.GetReviewCollection();
             this.userCollection = dbClient.GetUserCollection();
-           this.database = dbClient.GetMongoDB();
-
+            this.rentCollection = dbClient.GetRentCarCollection();
+            this.testCollection = dbClient.GetTestDriveCollection();
+            this.database = dbClient.GetMongoDB();
+            this.dbClient = dbClient;
 
 
         }
@@ -79,11 +84,34 @@ namespace NBP___Mongo.Services
         public async Task<bool> DeleteCar(String id)
         {
             Car car = await carCollection.Find(c => c.Id == id).FirstOrDefaultAsync();
-
             if (car == null)
             {
 
                 return false;
+            }
+            if (car.RentOrSale == false)
+            {
+                List<TestDrive> tests = await testCollection.Find(p => p.Car.Id == id).ToListAsync();
+                if (tests.Count != 0)
+                {
+                    TestDriveService t = new TestDriveService(dbClient);
+                    foreach (TestDrive tt in tests)
+                    {
+                        await t.DicardTestDrive(tt.ID);
+                    }
+                }
+            }
+            else if(car.RentOrSale == true)
+            {
+                List<RentCar> rentals = await rentCollection.Find(p => p.Car.Id == id).ToListAsync();
+                if (rentals.Count != 0)
+                {
+                    RentCarService r = new RentCarService(dbClient);
+                    foreach (RentCar rr in rentals)
+                    {
+                        await r.DicardRentCar(rr.ID);
+                    }
+                }
             }
             await carCollection.DeleteOneAsync(c => c.Id == id);
             return true;
