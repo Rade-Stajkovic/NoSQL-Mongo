@@ -40,8 +40,11 @@ namespace NBP___Mongo.Services
                 List<RentCar> rentals = await rentcarCollection.Find(p => p.Car.Id == CarID && p.Allowed == true).ToListAsync();
                 foreach(RentCar rental in rentals)
                 {
-                    int startCompare = OccupiedFrom.CompareTo(rental.OccupiedFrom);
-                    int endCompare = OccupiedUntill.CompareTo(rental.OccupiedUntill);
+                    //problem u mozgu koji ima MongoDb Server!!!
+                    DateTime cmp1 = rental.OccupiedFrom.AddDays(1).Date;
+                    DateTime cmp2 = rental.OccupiedUntill.AddDays(1).Date;
+                    int startCompare = OccupiedFrom.Date.CompareTo(cmp1);
+                    int endCompare = OccupiedUntill.Date.CompareTo(cmp2);
 
                     if((startCompare >= 0 && endCompare <= 0) || (startCompare <= 0 && endCompare >= 0))
                     {
