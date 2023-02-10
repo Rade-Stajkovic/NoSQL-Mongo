@@ -74,9 +74,19 @@ namespace NBP___Mongo.Controllers
         [Route("GetDealersTestDrives/{DealerID}/{RentOrSale}")]
         public async Task<IActionResult> GetDealersTestDrives(string DealerID,bool RentOrSale)
         {
-            List<TestDrive> list = await dealerService.GetDealersTestDrives(DealerID,RentOrSale);
-            IActionResult result = Ok(list);
-            return result;
+            try
+            {
+
+                List<TestDrive> list = await dealerService.GetDealersTestDrives(DealerID,RentOrSale);
+                IActionResult result = Ok(list);
+                return result;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+
         }
 
 

@@ -48,9 +48,19 @@ namespace NBP___Mongo.DBClient
             return database.GetCollection<Mark>("mark");
         }
 
+        public IMongoDatabase GetMongoDB()
+        {
+            throw new NotImplementedException();
+        }
+
         public IMongoCollection<RentCar> GetRentCarCollection()
         {
             return database.GetCollection<RentCar>("rentCar");
+        }
+
+        public IMongoCollection<Review> GetReviewCollection()
+        {
+            throw new NotImplementedException();
         }
 
         public IMongoCollection<TestDrive> GetTestDriveCollection()
