@@ -25,11 +25,11 @@ namespace NBP___Mongo.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> CreateUser( string username, string password, string name, string location)
+        public async Task<IActionResult> CreateUser(string username, string password, string name, string location)
         {
             try
             {
-                var result = await dealerService.CreateDealer( username, password, name, location);
+                var result = await dealerService.CreateDealer(username, password, name, location);
                 if (result == "Uspešno kreiran korisnik.")
                 {
                     return Ok(result);
@@ -72,8 +72,10 @@ namespace NBP___Mongo.Controllers
 
         [HttpGet]
         [Route("GetDealersTestDrives/{DealerID}/{RentOrSale}")]
-        public async Task<IActionResult> GetDealersTestDrives(string DealerID,bool RentOrSale)
+
+        public async Task<IActionResult> GetDealersTestDrives(string DealerID, bool RentOrSale)
         {
+<<<<<<< HEAD
             try
             {
 
@@ -87,14 +89,23 @@ namespace NBP___Mongo.Controllers
             }
 
 
+=======
+            List<TestDrive> list = await dealerService.GetDealersTestDrives(DealerID, RentOrSale);
+
+            IActionResult result = Ok(list);
+            return result;
+>>>>>>> a239fb6017e70250c56d4928a1aa0217c84f8b3f
         }
 
 
         [HttpGet]
         [Route("GetRentCars/{dealerId}/{RentOrSale}")]
-        public async Task<IActionResult> GetRentCars(string dealerId,bool RentOrSale)
+
+        public async Task<IActionResult> GetRentCars(string dealerId, bool RentOrSale)
         {
+          
             List<RentCar> list = await dealerService.GetRentCars(dealerId,RentOrSale);
+
             IActionResult result = Ok(list);
             return result;
         }
@@ -105,7 +116,7 @@ namespace NBP___Mongo.Controllers
         [Route("AddCarToDealer/{CarID}/{DealerID}")]
         public async Task<IActionResult> AddCarToDealer(string CarID, string DealerID)
         {
-            bool ttt = await dealerService.AddCarToDealer(CarID,DealerID);
+            bool ttt = await dealerService.AddCarToDealer(CarID, DealerID);
             return Ok(ttt);
         }
 

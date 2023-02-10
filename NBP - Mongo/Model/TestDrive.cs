@@ -21,6 +21,7 @@ namespace NBP___Mongo.Model
         public MongoDBRef User { get; set; }
 
         public Car Car { get; set; }
+        [JsonIgnore]
 
         [JsonIgnore]
         public MongoDBRef Dealer { get; set; }

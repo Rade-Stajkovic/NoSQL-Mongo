@@ -59,6 +59,18 @@ namespace NBP___Mongo.Services
             return null;
         }
 
+        //public async Task<List<RentCar>> GetRentCars(string userID)
+        //{
+        //    List<RentCar> rentCars = new List<RentCar>();
+        //    var user = await userCollection.Find(p => p.ID == userID).FirstOrDefaultAsync();
+        //    if (user != null)
+        //    {
+        //        var rentCarIds = user.RentCars.Select(x => x.Id).ToList();
+        //        rentCars = await rentCarCollection.Find(p => rentCarIds.Contains(p.ID)).ToListAsync();
+        //    }
+        //    return rentCars;
+        //}
+
         public async Task<List<RentCar>> GetRentCars(string userID)
         {
             List<RentCar> rentCars = new List<RentCar>();
@@ -67,8 +79,12 @@ namespace NBP___Mongo.Services
             {
                 foreach (var rentCarRef in user.RentCars)
                 {
+
+                   
+
                     var ID = rentCarRef.Id.ToString();
                     var rentCar = await rentCarCollection.Find(p => p.ID == ID).FirstOrDefaultAsync();
+
                     if (rentCar != null)
                         rentCars.Add(rentCar);
                 }
@@ -76,14 +92,20 @@ namespace NBP___Mongo.Services
             return rentCars;
         }
 
+
         public async Task<List<TestDrive>> GetTestDrives(string userID)
         {
             List<TestDrive> testDrives = new List<TestDrive>();
             var user = await userCollection.Find(p => p.ID == userID).FirstOrDefaultAsync();
             if (user != null)
             {
-                var testDrivesIds = user.TestDrives.Select(x => x.Id).ToList();
-                testDrives = await testDriveCollection.Find(p => testDrivesIds.Contains(p.ID)).ToListAsync();
+                foreach (var testDriveRef in user.TestDrives)
+                {
+                    var Id = testDriveRef.Id.ToString();
+                    var testDrive = await testDriveCollection.Find(p => p.ID == Id).FirstOrDefaultAsync();
+                    if (testDrive != null)
+                        testDrives.Add(testDrive);
+                }
             }
             return testDrives;
         }

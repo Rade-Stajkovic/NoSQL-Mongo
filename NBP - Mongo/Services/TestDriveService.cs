@@ -63,7 +63,7 @@ namespace NBP___Mongo.Services
                     await testCollection.InsertOneAsync(test);
 
                     u.RentCars.Add(new MongoDBRef("testDrive", test.ID));
-                    var update = Builders<User>.Update.Set("TestDrives", u.RentCars);
+                    var update = Builders<User>.Update.Set("TestDrives", u.TestDrives);
                     await userCollection.UpdateManyAsync(p => p.ID == UserID, update);
                     return 1;
                 }
@@ -79,9 +79,9 @@ namespace NBP___Mongo.Services
             TestDrive t = await testCollection.Find(p => p.ID == TestDriveID).FirstOrDefaultAsync();
             await testCollection.DeleteOneAsync(p => p.ID == TestDriveID);
 
-            List<User> users = await userCollection.Find(p=>p.TestDrives.Contains(new MongoDBRef("testDrive", TestDriveID))).ToListAsync();
+            List<User> users = await userCollection.Find(p => p.TestDrives.Contains(new MongoDBRef("testDrive", TestDriveID))).ToListAsync();
 
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 user.TestDrives.Remove(new MongoDBRef("testDrive", TestDriveID));
                 var update = Builders<User>.Update.Set("TestDrives", user.RentCars);
@@ -89,6 +89,6 @@ namespace NBP___Mongo.Services
             }
 
             return true;
-        }  
+        }
     }
 }

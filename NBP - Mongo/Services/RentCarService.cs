@@ -75,9 +75,18 @@ namespace NBP___Mongo.Services
                     await rentcarCollection.InsertOneAsync(rent);
 
                     u.RentCars.Add(new MongoDBRef("rentCar", rent.ID));
+                    var update = Builders<User>.Update.Set("RentCars", u.RentCars);
+                    await userCollection.UpdateManyAsync(p => p.ID == UserID, update);
+
+                   
+
 
                     
+
+
+                 
                     return 1;
+
                 }
 
             }
