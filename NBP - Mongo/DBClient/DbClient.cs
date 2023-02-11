@@ -73,10 +73,7 @@ namespace NBP___Mongo.DBClient
             return database.GetCollection<User>("users");
         }
 
-        public IMongoCollection<Review> GetReviewCollection()
-        {
-            return database.GetCollection<Review>("reviews");
-        }
+
 
     }
 }

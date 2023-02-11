@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using NBP___Mongo.Services.Files;
 namespace NBP___Mongo.Controllers
 {
     [ApiController]
@@ -22,11 +22,11 @@ namespace NBP___Mongo.Controllers
 
         [HttpPost]
         [Route("AddCar")]
-        public async Task<IActionResult> AddCar(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool available, bool rentOrSale)
+        public async Task<IActionResult> AddCar(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool available, bool rentOrSale, [FromForm] FileUpload file)
         {
             try
             {
-                var rez = await carService.AddNewCarAsync(description, year, interiorColor, exteriorColor, nameMark, nameModel, engineId, price, available, rentOrSale);
+                var rez = await carService.AddNewCarAsync(description, year, interiorColor, exteriorColor, nameMark, nameModel, engineId, price, available, rentOrSale, file);
                 if (rez)
                 {
                     return Ok("Uspesno dodat automobil");
@@ -185,13 +185,13 @@ namespace NBP___Mongo.Controllers
 
 
         [HttpGet]
-        [Route("GetCarsWithFilters/{markName}/{modelName}/{maxPrice}/{fuelType}/{rentOrSale}")]
+        [Route("GetCarsWithFilters/{markName}/{modelName}/{minPrice}/{maxPrice}/{fuelType}/{rentOrSale}")]
 
-        public async Task<IActionResult> GerCarsWithFilters(String markName, String modelName, double maxPrice, String fuelType, bool rentOrSale)
+        public async Task<IActionResult> GerCarsWithFilters(String markName, String modelName,double minPrice, double maxPrice, String fuelType, bool rentOrSale)
         {
             try
             {
-                List<Car> list = await carService.GetCarsWithFilters(markName, modelName, maxPrice, fuelType, rentOrSale);
+                List<Car> list = await carService.GetCarsWithFilters(markName, modelName, maxPrice,minPrice, fuelType, rentOrSale);
 
                 return Ok(list);
             }

@@ -81,7 +81,7 @@ function Logovanje(props)
         window.location.href='/';
      }
         
-      //   localStorage.setItem("user-info",JSON.stringify(data));
+      //localStorage.setItem("user-info",JSON.stringify(data));
        
     }
   

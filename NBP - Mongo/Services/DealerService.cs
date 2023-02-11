@@ -144,7 +144,10 @@ namespace NBP___Mongo.Services
         }
 
 
-
+        public async Task<List<Dealer>> GetDealers()
+        {
+            return await dealerCollection.Find(c => true).ToListAsync();
+        }
 
     }
 
