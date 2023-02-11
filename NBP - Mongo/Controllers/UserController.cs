@@ -23,6 +23,7 @@ namespace NBP___Mongo.Controllers
 
 
         [HttpPost]
+        [Route("CreateUser/{name}/{surname}/{username}/{password}")]
         public async Task<IActionResult> CreateUser(string name, string surname, string username, string password)
         {
             try
