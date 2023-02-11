@@ -23,7 +23,7 @@ namespace NBP___Mongo.Services
         private readonly IDbClient dbClient;
         private readonly IMongoCollection<RentCar> rentCollection;
         private readonly IMongoCollection<TestDrive> testCollection;
-        private IMongoDatabase database;
+  
 
 
 
@@ -39,7 +39,7 @@ namespace NBP___Mongo.Services
             this.engineCollection = dbClient.GetEngineTypeCollection();
             this.reviewCollection = dbClient.GetReviewCollection();
             this.userCollection = dbClient.GetUserCollection();
-            this.database = dbClient.GetMongoDB();
+           
 
 
         }
