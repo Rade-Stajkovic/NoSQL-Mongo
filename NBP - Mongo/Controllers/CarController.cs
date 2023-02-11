@@ -259,5 +259,13 @@ namespace NBP___Mongo.Controllers
                 throw new Exception(e.Message);
             }
         }
+
+        [HttpGet]
+        [Route("GetMoreDetails/{CarID}")]
+
+        public async Task<IActionResult> GetMoreDetails(string CarID)
+        {
+            return new JsonResult(await carService.GetMoreDetails(CarID));
+        }
     }
 }

@@ -95,6 +95,8 @@ namespace NBP___Mongo.Services
             }
 
             else car.Picture = "def.jpg";
+            var update = Builders<Car>.Update.Set("Picture", car.Picture);
+            await carCollection.UpdateOneAsync(p => p.Id == car.Id, update);
             return true;
         
         }
@@ -138,6 +140,16 @@ namespace NBP___Mongo.Services
                 d.Cars.Remove(new MongoDBRef("cars", car.Id));
                 var update = Builders<Dealer>.Update.Set("Cars", d.Cars);
                 await dealerCollection.UpdateManyAsync(p => p.ID == car.Dealer.Id, update);
+            }
+            if (car.Picture != "def.jpg")
+            {
+                string path = _webHost.WebRootPath + "\\CarsPictures\\";
+                if (!Directory.Exists(path))
+                {
+                    Console.WriteLine("Oxi");
+                }
+                path += car.Picture;
+                if (System.IO.File.Exists(path)) System.IO.File.Delete(path);
             }
             await carCollection.DeleteOneAsync(c => c.Id == id);
 
@@ -364,6 +376,13 @@ namespace NBP___Mongo.Services
             return await reviewCollection.Find(r => r.Car.Id == carId).ToListAsync();
         }
 
+
+        public async Task<Car> GetMoreDetails(string CarID)
+        {
+            var car = await carCollection.Find(p => p.Id == CarID).FirstOrDefaultAsync();
+
+            return car;
+        }
 
         
 
