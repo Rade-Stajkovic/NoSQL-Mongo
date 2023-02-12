@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using MongoDB.Driver;
-
-
+using NBP___Mongo.Services.Files;
 using NBP___Mongo.DBClient;
 using NBP___Mongo.Model;
 using MongoDB.Driver.Linq;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Xml.Linq;
 
 namespace NBP___Mongo.Services
 {
@@ -23,7 +25,9 @@ namespace NBP___Mongo.Services
         private readonly IDbClient dbClient;
         private readonly IMongoCollection<RentCar> rentCollection;
         private readonly IMongoCollection<TestDrive> testCollection;
+        private readonly IMongoCollection<Dealer> dealerCollection;
         private IMongoDatabase database;
+        private IWebHostEnvironment _webHost;
 
 
 
@@ -41,10 +45,9 @@ namespace NBP___Mongo.Services
             this.userCollection = dbClient.GetUserCollection();
             this.database = dbClient.GetMongoDB();
 
-
         }
 
-        public async Task<bool> AddNewCarAsync(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool av, bool rentOrSale)
+        public async Task<bool> AddNewCarAsync(String description, String year, String interiorColor, String exteriorColor, String nameMark, String nameModel, String engineId, double price, bool av, bool rentOrSale, FileUpload file)
         {
             Mark mark = await markCollection.Find(c => c.Name == nameMark).FirstOrDefaultAsync();
             CarModel model = await modelCollection.Find(m => m.Name == nameModel).FirstOrDefaultAsync();
@@ -55,6 +58,8 @@ namespace NBP___Mongo.Services
                 return false;
 
             }
+
+
 
          
             Car car = new Car
@@ -75,6 +80,23 @@ namespace NBP___Mongo.Services
             };
 
             await carCollection.InsertOneAsync(car);
+
+            if (file.file.Length > 0)
+            {
+                string path = _webHost.WebRootPath + "\\CarsPictures\\";
+                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                string newname = car.Id.ToString() + System.IO.Path.GetExtension(file.file.FileName);
+                using (FileStream fileStream = System.IO.File.Create(path + newname))
+                {
+                    file.file.CopyTo(fileStream);
+                    fileStream.Flush();
+                }
+                car.Picture = newname;
+            }
+
+            else car.Picture = "def.jpg";
+            var update = Builders<Car>.Update.Set("Picture", car.Picture);
+            await carCollection.UpdateOneAsync(p => p.Id == car.Id, update);
             return true;
         
         }
@@ -111,7 +133,26 @@ namespace NBP___Mongo.Services
                     }
                 }
             }
+            List<Dealer> list = await dealerCollection.Find(p=>true).ToListAsync();
+            Dealer d = await dealerCollection.Find(p => p.ID == car.Dealer.Id.ToString()).FirstOrDefaultAsync();
+            if (d != null)
+            {
+                d.Cars.Remove(new MongoDBRef("cars", car.Id));
+                var update = Builders<Dealer>.Update.Set("Cars", d.Cars);
+                await dealerCollection.UpdateManyAsync(p => p.ID == car.Dealer.Id, update);
+            }
+            if (car.Picture != "def.jpg")
+            {
+                string path = _webHost.WebRootPath + "\\CarsPictures\\";
+                if (!Directory.Exists(path))
+                {
+                    Console.WriteLine("Oxi");
+                }
+                path += car.Picture;
+                if (System.IO.File.Exists(path)) System.IO.File.Delete(path);
+            }
             await carCollection.DeleteOneAsync(c => c.Id == id);
+
             return true;
         }
 
@@ -141,7 +182,7 @@ namespace NBP___Mongo.Services
         public async Task<bool> AddModelToMark(String nameMark, String nameModel)
         {
 
-            // Ova funkcija nije dobra, mora da se menja
+          
             Mark mark = await markCollection.Find(c => c.Name == nameMark).FirstOrDefaultAsync();
             CarModel model = await modelCollection.Find(m => m.Name == nameModel).FirstOrDefaultAsync();
 
@@ -151,7 +192,7 @@ namespace NBP___Mongo.Services
 
             }
 
-            //
+      
             model.Mark = new MongoDBRef("mark", mark.Id);
 
            
@@ -230,17 +271,49 @@ namespace NBP___Mongo.Services
             
         }
 
-        public async Task<List<Car>> GetCarsWithFilters(String markName, String modelName, double maxPrice, String fuelType,bool rentOrSale)
+        public async Task<List<Car>> GetCarsWithFilters(String markName, String modelName, double maxPrice,double minPrice, String fuelType,bool rentOrSale)
         {
-            
+
+
+            var builder = Builders<Car>.Filter;
+            var filter = builder.Eq(x => x.RentOrSale,rentOrSale);
+
+            if (!string.IsNullOrWhiteSpace(markName) && markName != "")
+            {
+                var markNameFilter = builder.Eq(x => x.Mark.Name, markName);
+                filter &= markNameFilter;
+            }
+
+            if (!string.IsNullOrWhiteSpace(modelName) && modelName != "")
+            {
+                var modelNameFilter = builder.Eq(x => x.CarModel.Name, modelName);
+                filter &= modelNameFilter;
+            }
+
+            if (!string.IsNullOrWhiteSpace(fuelType) && fuelType != "")
+            {
+                var fuelTypeFilter = builder.Eq(x => x.EngineType.FuelType, fuelType);
+                filter &= fuelTypeFilter;
+            }
+
+            if ( maxPrice != -1)
+            {
+                var priceFilter =  builder.Lt(x => x.Price, maxPrice);
+                filter &= priceFilter;
+            }
+
+            if (minPrice != -1)
+            {
+
+                var priceFilter2 = builder.Gt(x => x.Price, minPrice);
+                filter &= priceFilter2;
+            }
+
+            var result = await carCollection.Find(filter).ToListAsync();
+            return result;
+
            
-            return await carCollection.Find(c => (maxPrice != 0)? c.Price  < maxPrice : true
-                                            && (markName !="")?c.Mark.Name == markName:true
-                                            && (modelName != "") ? c.CarModel.Name == modelName : true 
-                                            && c.RentOrSale == rentOrSale 
-                                            && (fuelType !="")? c.EngineType.FuelType == fuelType: true
-                                            && c.Available).ToListAsync();
-        
+
 
         }
 
@@ -303,6 +376,13 @@ namespace NBP___Mongo.Services
             return await reviewCollection.Find(r => r.Car.Id == carId).ToListAsync();
         }
 
+
+        public async Task<Car> GetMoreDetails(string CarID)
+        {
+            var car = await carCollection.Find(p => p.Id == CarID).FirstOrDefaultAsync();
+
+            return car;
+        }
 
         
 

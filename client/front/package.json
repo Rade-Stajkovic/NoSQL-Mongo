@@ -19,6 +19,7 @@
     "react-router-dom": "^6.6.1",
     "react-scripts": "^4.0.3",
     "react-slick": "^0.29.0",
+    "react-switch-selector": "^2.2.1",
     "signalr": "^2.4.3",
     "v5": "^0.1.2",
     "web-vitals": "^2.1.4"

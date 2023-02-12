@@ -15,7 +15,8 @@ import {
   MDBDropdownToggle,
   MDBDropdownMenu,
   MDBDropdownItem,
-  MDBDropdown
+  MDBDropdown,
+  MDBInput
 } from "mdb-react-ui-kit";
 
 
@@ -26,23 +27,74 @@ function Pocetna() {
     const [marks, setMarks] = useState();
     const [models, setModels] = useState(false);
     const [price, setPrice] = useState(false);
-    const [fuelTypes, setFuelTypes] = useState(false);
-    const [mark, setMark] = useState(false);
+    const [fuelTypes, setFuelTypes] = useState(
+      [{name: "Dizel"},
+       {name: "Benzin"},
+       {name: "Hibridni pogon"},
+       {name: "Elekricni pogon"}
+    ]
+
+
+      
+    );
+    const [cars, setCars] = useState(false);
+    const [mark, setMark] = useState(" ");
+    const [model, setModel] = useState(" ");
+    const [fuel, setFuel] = useState(" ");
+    const [minPrice, setMinPrice] = useState(-1);
+    const [maxPrice, setMaxPrice] = useState(-1);
+    const [rentSale, setRentSale] = useState(true);
+
+
+
+    
+
 
     function changeMark(m)
     {
-      setMark(m);
+      setMark(m.name);
     }
 
+    function changeModel(m)
+    {
+      setModel(m.name);
+    }
+    function changeFuel(m)
+    {
+      setFuel(m.name);
+    }
+
+    
+    const options = [
+      {
+          label: <span>Iznajmi</span>,
+          value: {
+               foo: true
+          },
+          selectedBackgroundColor: "#0097e6",
+      },
+      {
+          label: "Kupi",
+          value: {
+            bar: false
+          },
+          selectedBackgroundColor: "#fbc531"
+      }
+   ];
+
+   const onChange = () => {
+      
+      setRentSale()
+   }
+  
+
+   const initialSelectedIndex = options.findIndex(({value}) => value === "bar");
+
+    
+    console.log(maxPrice, minPrice);
 
     useEffect(()=>{
    
-    
-      // console.log(user);
-      // if (user!=null)
-      //  setUserinfo(user);
-      // console.log(user_info);
-      //console.log(del);
   
       
   
@@ -78,7 +130,24 @@ function Pocetna() {
       
     },[mark])
 
-    
+    const getCars = () => {
+
+      console.log(mark,model,fuel,maxPrice, minPrice);
+
+      axios.get("https://localhost:44341/Car/GetCarsWithFilters/"+mark+"/"+model+"/"+minPrice+"/"+maxPrice+"/"+fuel+"/"+rentSale)
+        .then(res => {
+          //console.log(res)
+          setCars(res.data)
+          
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+        console.log(cars);
+
+    }
+
     
     // useEffect(()=>{
       
@@ -92,7 +161,7 @@ function Pocetna() {
     return (
         <>
       <div style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 'large' }}>
-       Pogledajte proizvode preporucene od strane drugih korisnika
+       
       </div>
      
       <MDBContainer fluid>
@@ -125,7 +194,7 @@ function Pocetna() {
                 </MDBDropdownToggle>
                 <MDBDropdownMenu>
                   {models ? models.map( m => (
-                     <MDBDropdownItem key={m.id}  >  
+                     <MDBDropdownItem  key={m.id} onClick={() => changeModel(m)}>  
                      {m.name}
                    </MDBDropdownItem>
 
@@ -133,11 +202,58 @@ function Pocetna() {
                 </MDBDropdownMenu>
               </MDBDropdown>
 
+              <MDBDropdown className='justify-contetnt-center'>
+                <MDBDropdownToggle tag='a' className='nav-link' role='button'>
+                  Gorivo
+                </MDBDropdownToggle>
+                <MDBDropdownMenu>
+                  {fuelTypes? fuelTypes.map( m => (
+                     <MDBDropdownItem onClick={() => changeFuel(m)}  >  
+                     {m.name}
+                   </MDBDropdownItem>
+
+                  )): <div>Loading...</div>}
+                </MDBDropdownMenu>
+              </MDBDropdown>
+             
+          
+ 
+
+
+
+              <MDBInput wrapperClass='mb-4' label='cena od' id='formControlLg'  size="lg" type="number"  onChange={(e)=>setMinPrice(e.target.value)}/>
+              <MDBInput wrapperClass='mb-4' label='cena do' id='formControlLg'  size="lg" type="number"  onChange={(e)=>setMaxPrice(e.target.value)}/>
+
+              <MDBBtn className="mb-4 px-5"  size='lg'  onClick={getCars}>Pretrazi</MDBBtn>
+
+
             </MDBCardBody>
           </MDBCard>
+
+          
         </MDBCol>
-       </MDBRow>
-      </MDBContainer>
+          
+        <MDBCol md="12" xl="10">
+          {cars ? cars.map(c => (
+
+          <MDBCard className="shadow-0 border rounded-3 mt-5 mb-3">
+           <MDBCardBody className='justify-content-row'>
+            <div style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 'large' }}>
+             {c.mark.name}
+             {c.carModel.name}
+
+
+              </div>
+            </MDBCardBody>
+            <MDBBtn className="mb-4 px-5"  size='lg'  >Prikazi vise</MDBBtn>
+            
+           </MDBCard>
+
+          )): <div>Nema vozila</div>}
+          
+        </MDBCol>
+      </MDBRow>
+    </MDBContainer>
      
       <div>
       <PreporuceniProizvodi />

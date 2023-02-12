@@ -27,7 +27,6 @@ namespace NBP___Mongo.Model
         public Dealer()
         {
             Cars = new List<MongoDBRef>();
-            
         }
 
     }

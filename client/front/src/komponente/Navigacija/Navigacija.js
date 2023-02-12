@@ -179,37 +179,7 @@ const Navigacija = (props) =>
             </MDBNavbarItem>
 
 
-            <MDBNavbarItem>
-              <MDBDropdown>
-                <MDBDropdownToggle tag='a' className='nav-link' role='button'>
-                  Kategorije
-                </MDBDropdownToggle>
-                <MDBDropdownMenu>
-                  {categories ? categories.map(category => (
-                    // <MDBDropdownItem key={category.tempID} >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{ color: '#393f81' }}>
-                    <MDBDropdownItem key={category.tempID} link >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{ color: '#393f81' }}>
-                      {category.name}
-                    </a></MDBDropdownItem>
-                  )) : <p>Loading...</p>}
-                </MDBDropdownMenu>
-              </MDBDropdown>
-            </MDBNavbarItem>
-
-            <MDBNavbarItem>
-              <MDBDropdown>
-                <MDBDropdownToggle tag='a' className='nav-link' role='button'>
-                  Akcije
-                </MDBDropdownToggle>
-                <MDBDropdownMenu>
-                {markets ? markets.map(market => (
-                    // <MDBDropdownItem key={category.tempID} >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{ color: '#393f81' }}>
-                    <MDBDropdownItem key={market.id} link >  <a href={`/market/${market.name}/${market.id}`} style={{ color: '#393f81' }}>
-                      {market.name}
-                    </a></MDBDropdownItem>
-                  )) : <p>Loading...</p>}
-                </MDBDropdownMenu>
-              </MDBDropdown>
-            </MDBNavbarItem></>)}
+        </>)}
           
             
 

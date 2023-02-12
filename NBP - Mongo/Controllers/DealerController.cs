@@ -7,6 +7,7 @@ using NBP___Mongo.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace NBP___Mongo.Controllers
@@ -42,6 +43,20 @@ namespace NBP___Mongo.Controllers
             catch (Exception e)
             {
                 return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetAllDealers")]
+        public async Task<IActionResult> GerAllDealers()
+        {
+            try
+            {
+                var list = await dealerService.GetDealers(); return Ok(list);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
 
