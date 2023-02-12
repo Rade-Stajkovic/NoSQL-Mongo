@@ -52,7 +52,7 @@ function Logovanje(props)
       if ((document.getElementById('flexSwitchCheckDefault')).checked)
       {
         console.log("CEKIRANO");
-        let result = await fetch("https://localhost:44332/Delivery/LogIn/"+username+"/"+password,
+        let result = await fetch("https://localhost:44341/Dealer/LogInDealer/"+username+"/"+password,
         {method: 'GET',
         headers: {
 
@@ -62,11 +62,11 @@ function Logovanje(props)
         console.log(result);
         let data = await result.text();
         console.log(data);
-        localStorage.setItem("delivery-info",data);
-        window.location.href='dostava';
+        localStorage.setItem("dealer-info",data);
+        window.location.href='dealer';
       }
       else{
-        let result = await fetch("https://localhost:44332/User/LogIn/"+username+"/"+password,
+        let result = await fetch("https://localhost:44341/User/LogIn/"+username+"/"+password,
         {method: 'GET',
         headers: {
 
@@ -89,7 +89,7 @@ function Logovanje(props)
     return(
         <Modal
           {...props}
-        size="lg"
+       
           
         
         centered
@@ -104,11 +104,7 @@ function Logovanje(props)
       <MDBCard>
          <MDBRow className='g-0' >
 
-         <MDBCol md='6' center >
-             <MDBCardImage src='https://as2.ftcdn.net/v2/jpg/05/28/55/97/1000_F_528559716_az7F03Lp6XZvtkADvj6goWONc45Xgf0z.jpg' alt="login form" className='rounded-start w-100'/>
-           </MDBCol>
-
-           <MDBCol md='6'>
+   
              <MDBCardBody className='d-flex flex-column'>
 
               <div className='d-flex flex-row mt-2'>
@@ -122,7 +118,7 @@ function Logovanje(props)
                  <MDBInput wrapperClass='mb-4' label='Lozinka' id='formControlLg' type='password' size="lg"  onChange={(e)=>setPassword(e.target.value)}/>
 
                 <div className='mb-4'>
-                  <MDBSwitch id='flexSwitchCheckDefault' label='Prijavi se kao dostavljač' />
+                  <MDBSwitch id='flexSwitchCheckDefault' label='Prijavi se kao dealer' />
                 </div>
 
                <MDBBtn className="mb-4 px-5"  size='lg'  onClick={login}>Prijavi se</MDBBtn>
@@ -132,7 +128,7 @@ function Logovanje(props)
               
 
              </MDBCardBody>
-           </MDBCol>
+         
 
          </MDBRow>
        </MDBCard>

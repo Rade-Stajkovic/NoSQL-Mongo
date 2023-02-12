@@ -6,7 +6,7 @@ import Registracija from './komponente/Registracija/Registracija';
 import Kategorija from './komponente/Kategorija/Kategorija';
 import Pocetna from './Pocetna'
 import SamoProizvod from './komponente/SamoProizvod/SamoProizod';
-import Dostavljac from './Dostavljac';
+import Dostavljac from './Deliever';
 import Pretraga from './komponente/Pretraga';
 import {useRef} from 'react';
 import *  as signalR from '@microsoft/signalr';
@@ -53,7 +53,7 @@ function Rute ()
             <Route path='/kategorija/:name/:IDCat' element={<Kategorija/>} />
             <Route path='/' element={<Pocetna/>} />
             <Route path='/proizvod/:IdProduct' element={< SamoProizvod />} />
-            <Route path='dostava' element={<Dostavljac/>} />
+            <Route path='dealer' element={<Dostavljac/>} />
             <Route path='/pretraga' element = {<Pretraga/>} />
             <Route path='/market/:name/:IDMarket' element={<Akcije/>} />
         </Routes>
