@@ -16,7 +16,8 @@ import {
   MDBDropdownMenu,
   MDBDropdownItem,
   MDBDropdown,
-  MDBInput
+  MDBInput,
+  MDBSwitch 
 } from "mdb-react-ui-kit";
 
 
@@ -82,9 +83,9 @@ function Pocetna() {
       }
    ];
 
-   const onChange = () => {
+   const changeRentSale = () => {
       
-      setRentSale()
+      setRentSale(!rentSale);
    }
   
 
@@ -215,7 +216,13 @@ function Pocetna() {
                   )): <div>Loading...</div>}
                 </MDBDropdownMenu>
               </MDBDropdown>
-             
+
+
+    
+              <div className='mb-4'>
+                <label>Kupi</label>
+                  <MDBSwitch  id='flexSwitchCheckDefault' label='Iznajmi' onChange={() => changeRentSale()} />
+                </div>
           
  
 

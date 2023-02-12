@@ -335,7 +335,7 @@ namespace NBP___Mongo.Services
             {
                 Text = text,
                 Car =  new MongoDBRef("car", carId),
-                User = new MongoDBRef("user", userId)
+                User = user
             };
 
 

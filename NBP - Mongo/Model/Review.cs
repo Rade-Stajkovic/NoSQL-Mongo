@@ -18,8 +18,7 @@ namespace NBP___Mongo.Model
         [JsonIgnore]
         public MongoDBRef Car { get; set; }
 
-        [JsonIgnore]
-        public MongoDBRef User { get; set; }
+        public User User { get; set; }
 
         public String Text { get; set; }
 
