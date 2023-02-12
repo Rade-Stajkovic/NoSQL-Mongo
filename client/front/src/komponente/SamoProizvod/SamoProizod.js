@@ -1,6 +1,7 @@
 import React from "react";
 
-import Narudzbina from "../Narudzbina/Narudzbina";
+import MakeCarRental from "../Ren/Test/MakeCarRental";
+import MakeCarTest from "../Ren/Test/MakeCarTest";
 import Recenzija from "../Recenzija/Recenzija";
 import Komentari from "../Komentari/Komentari";
 import {
@@ -24,6 +25,7 @@ function SamoProizvod() {
 
   const [car, setCar] = useState();
   const [order, setOrder] = useState("");
+  const [order2, setOrder2] = useState("");
 
   const { CarID } = useParams();
 
@@ -49,6 +51,14 @@ function SamoProizvod() {
   function orderhide() {
     setOrder(false);
   }
+  function ordershow2() {
+    setOrder2(true);
+  }
+  function orderhide2() {
+    setOrder2(false);
+  }
+
+
 
   const handleOpenModal2 = () => {
     setShowModal2(true);
@@ -217,18 +227,26 @@ function SamoProizvod() {
 
                   {user_info ? (<>
 
+                    {car.rentOrSale ? <MDBBtn color="primary" size="sm" onClick={ordershow}>
+                      "Make a Rent"
+                    </MDBBtn> : <MDBBtn color="primary" size="sm" onClick={ordershow2}>
+                      "Make a Test Drive"
+                    </MDBBtn>}
+                    
 
-                    <MDBBtn color="primary" size="sm" onClick={ordershow}>
-                      {car.rentOrSale ? "Make a Rent" : "Make a Test Drive"}
-                    </MDBBtn>
-
-                    <Narudzbina
+                    <MakeCarRental
                       show={order}
                       onHide={orderhide}
                       CarID={car.CarID}
+                      Dealer={car.Dealer}
                     >
-                    </Narudzbina>
+                    </MakeCarRental>
 
+                    <MakeCarTest
+                    show={order2}
+                    onHide={orderhide2}
+                    CarID={car.CarID}
+                    Dealer={car.Dealer}></MakeCarTest>
 
                   </>)
 

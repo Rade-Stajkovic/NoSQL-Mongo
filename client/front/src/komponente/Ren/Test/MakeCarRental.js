@@ -1,11 +1,10 @@
 import React from 'react';
-import './Narudzbina.css';
 import { Modal, Form, FormControl, Button, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 import axios from 'axios';
 import { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 
-const Narudzbina = (props) => {
+const MakeCarRental = (props) => {
     const { show, onHide, CarID, } = props;
 
     const [OccupiedFrom, setOccupiedFrom] = useState('');
@@ -40,34 +39,34 @@ const Narudzbina = (props) => {
     console.log(dealer);
 
 
-    // async function order(OccupiedFrom,OccupiedUntil, dealer, UserID) {
-    //     console.log(OccupiedFrom, OccupiedUntil, dealer, UserID);
+    async function rent(OccupiedFrom,OccupiedUntil, dealer, UserID) {
+        console.log(OccupiedFrom, OccupiedUntil, dealer, UserID);
 
 
-    //     if ( !OccupiedFrom || !OccupiedUntil || !Dea || !CarID || !UserID ) {
-    //         console.error("Nedostaju neke od obaveznih varijabli");
-    //         return;
-    //     }
+        if ( !OccupiedFrom || !OccupiedUntil || !CarID || !UserID  ) {
+            console.error("Nedostaju neke od obaveznih varijabli");
+            return;
+        }
 
-    //     try {
-    //         const response = await axios.post(`https://localhost:44341//RentCar/MakeCarRental/${OccupiedFrom}/${OccupiedFrom}/${CarID}/${DealerID}/${UserID}`);
-
-
-    //         if (response.status !== 200) {
-    //             console.error(`API odgovor nije uspeo: ${response.status}`);
-    //             return;
-    //         }
-
-    //         const data = response.data;
+        try {
+            const response = await axios.post(`https://localhost:44341//RentCar/MakeCarRental/${OccupiedFrom}/${OccupiedFrom}/${CarID}/${props.Dealer}/${UserID}`);
 
 
+            if (response.status !== 200) {
+                console.error(`API odgovor nije uspeo: ${response.status}`);
+                return;
+            }
 
-    //         alert("Narudzbina je poslata dealeru");
-    //         console.log(response);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
+            const data = response.data;
+
+
+
+            alert("Narudzbina je poslata dealeru");
+            console.log(response);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
 
 
@@ -95,23 +94,14 @@ const Narudzbina = (props) => {
                         <Form.Label><strong>OccupiedUntil</strong></Form.Label>
                         <Form.Control type="date" value={OccupiedUntil} onChange={e => setOccupiedUntil(e.target.value)} />
                     </Form.Group>
-                    <Form.Group>
-                        <Form.Label><strong>Dealer</strong></Form.Label>
-                        <Form.Control as="select" value={dealer} onChange={e => setDealer(e.target.value)}>
-                            <option value="">dealer</option>
-                            {dealer && dealer.length > 0 && dealer.map(d => (
-                                <option key={d.id} value={d.name}>{d.name}</option>
-                            ))}
-                        </Form.Control>
-                    </Form.Group>
 
 
 
-                    {/* <Button onClick={() => order(OccupiedFrom, OccupiedUntil, dealer, UserID)}>Rezervisi</Button> */}
+                    {<Button onClick={() => rent(OccupiedFrom, OccupiedUntil, UserID)}>Rezervisi</Button> }
 
                 </Form>
             </Modal.Body>
         </Modal>
     )
 }
-export default Narudzbina;
+export default MakeCarRental;

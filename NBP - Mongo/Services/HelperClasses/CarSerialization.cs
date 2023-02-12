@@ -1,32 +1,30 @@
-
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 using MongoDB.Driver;
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
+using NBP___Mongo.Model;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using System;
 
-namespace NBP___Mongo.Model
+namespace NBP___Mongo.Services.HelperClasses
 {
-    public class Car
+    public class CarSerialization
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public CarModel CarModel { get; set; }
 
-     
+
         public Mark Mark { get; set; }
 
-        public  String ExteriorColor { get; set; }
+        public String ExteriorColor { get; set; }
 
         public String InteriorColor { get; set; }
 
-        public String Drivetrain  { get; set; }
+        public String Drivetrain { get; set; }
 
-     
+
         public EngineType EngineType { get; set; }
 
         [JsonIgnore]
@@ -43,14 +41,13 @@ namespace NBP___Mongo.Model
 
         public bool Available { get; set; }
 
-        [JsonIgnore]
-        public MongoDBRef Dealer{ get; set; }
+        public string Dealer { get; set; }
 
         public string Picture;
 
-        public Car()
+        public CarSerialization()
         {
-          
+
             Reviews = new List<MongoDBRef>();
 
         }

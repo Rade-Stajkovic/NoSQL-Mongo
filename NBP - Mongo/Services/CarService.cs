@@ -11,6 +11,7 @@ using MongoDB.Driver.Linq;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using System.Xml.Linq;
+using NBP___Mongo.Services.HelperClasses;
 
 namespace NBP___Mongo.Services
 {
@@ -376,11 +377,30 @@ namespace NBP___Mongo.Services
         }
 
 
-        public async Task<Car> GetMoreDetails(string CarID)
+        public async Task<CarSerialization> GetMoreDetails(string CarID)
         {
             var car = await carCollection.Find(p => p.Id == CarID).FirstOrDefaultAsync();
 
-            return car;
+            CarSerialization carReturn = new CarSerialization
+            {
+                Id = car.Id,
+                CarModel = car.CarModel,
+                Mark = car.Mark,
+                ExteriorColor = car.ExteriorColor,
+                InteriorColor = car.InteriorColor,
+                Drivetrain = car.Drivetrain,
+                EngineType = car.EngineType,
+                Reviews = car.Reviews,
+                Description = car.Description,
+                Year = car.Year,
+                Price = car.Price,
+                RentOrSale = car.RentOrSale,
+                Available = car.Available,
+                Dealer = car.Dealer.Id.ToString(),
+                Picture = car.Picture,
+            };
+
+            return carReturn;
         }
 
         
