@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import PreporuceniProizvodi from './komponente/PreporuceniProizvodi/PreporuceniProizvodi';
+
 import axios from "axios";
 
 import {

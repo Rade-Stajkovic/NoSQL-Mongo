@@ -21,22 +21,7 @@ namespace NBP___Mongo.Controllers
         {
             this._rentCarService = service;
         }
-      
-        [HttpGet]
-        [Route("GetDealersRentals/{DealerID}")]
-        public async Task<ActionResult> GetDealersRentals(string DealerID)
-        {
-            try
-            {
-                List<RentCar> list = await _rentCarService.GetDealersRentals(DealerID);
-                return Ok(await _rentCarService.GetDealersRentals(DealerID));
-            }
-            catch(Exception e)
-            {
-                throw;
-            }
-        }
-
+     
         [HttpPost]
         [Route("MakeCarRental/{OccupiedFrom}/{OccupiedUntill}/{CarID}/{DealerID}/{UserID}")]
         public async Task<IActionResult> MakeCarRental(DateTime OccupiedFrom, DateTime OccupiedUntill, string CarID, string DealerID, string UserID)

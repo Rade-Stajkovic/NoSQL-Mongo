@@ -112,24 +112,6 @@ namespace NBP___Mongo.Services
             return false;
         }
 
-        public async Task<List<RentCar>> GetDealersRentals(string DealerID)
-        {
-            try
-            {
-                var rentCars = new List<RentCar>(); 
-                var result = await rentcarCollection.Find(p=>p.Dealer.Id == DealerID).ToListAsync();
-                foreach (var rentCar in result)
-                {
-                    rentCars.Add(rentCar);
-                }
-                return rentCars;
-            }
-            catch(Exception e)
-            {
-                throw;
-            }
-
-        }
 
         public async Task<bool> DicardRentCar(string RentCarID)
         {

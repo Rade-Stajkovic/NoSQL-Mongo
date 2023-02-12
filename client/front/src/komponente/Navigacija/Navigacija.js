@@ -4,9 +4,9 @@ import Logovanje from '../Logovanje/Logovanje';
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Notifikacije from '../Notifikacije/Notifikacije';
+
 import './Navigacija.css'
-import * as signalR from "@microsoft/signalr";
+
 
 
 
@@ -75,28 +75,6 @@ const Navigacija = (props) =>
       const name = dealerInfo.name;
       setDealerName(name);
     }
-      
-      
-
-
-    axios.get("https://localhost:44332/GetAllCategories")
-    .then(res => {
-      //console.log(res)
-      setCategories(res.data)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-
-    axios.get("https://localhost:44332/GetAllMarkets")
-    .then(res => {
-      //console.log(res)
-      setMarkets(res.data)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-
     
   },[]
   )

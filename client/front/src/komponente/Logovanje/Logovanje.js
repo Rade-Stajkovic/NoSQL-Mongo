@@ -47,9 +47,9 @@ function Logovanje(props)
       console.log(username, password);
         let item = {username, password};
         var heders = {};
-      console.log(document.getElementById('flexSwitchCheckDefault'));
+      console.log(document.getElementById('flexSwitchCheckDefault2'));
 
-      if ((document.getElementById('flexSwitchCheckDefault')).checked)
+      if ((document.getElementById('flexSwitchCheckDefault2')).checked)
       {
         console.log("CEKIRANO");
         let result = await fetch("https://localhost:44341/Dealer/LogInDealer/"+username+"/"+password,
@@ -118,7 +118,7 @@ function Logovanje(props)
                  <MDBInput wrapperClass='mb-4' label='Lozinka' id='formControlLg' type='password' size="lg"  onChange={(e)=>setPassword(e.target.value)}/>
 
                 <div className='mb-4'>
-                  <MDBSwitch id='flexSwitchCheckDefault' label='Prijavi se kao dealer' />
+                  <MDBSwitch id='flexSwitchCheckDefault2' label='Prijavi se kao dealer' />
                 </div>
 
                <MDBBtn className="mb-4 px-5"  size='lg'  onClick={login}>Prijavi se</MDBBtn>

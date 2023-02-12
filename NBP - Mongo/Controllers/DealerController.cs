@@ -95,8 +95,8 @@ namespace NBP___Mongo.Controllers
             {
 
                 List<TestDrive> list = await dealerService.GetDealersTestDrives(DealerID,RentOrSale);
-                IActionResult result = Ok(list);
-                return result;
+                
+                return new JsonResult(list);
             }
             catch (Exception e)
             {
@@ -116,8 +116,8 @@ namespace NBP___Mongo.Controllers
           
             List<RentCar> list = await dealerService.GetRentCars(dealerId,RentOrSale);
 
-            IActionResult result = Ok(list);
-            return result;
+            
+            return new JsonResult(list);
         }
 
 

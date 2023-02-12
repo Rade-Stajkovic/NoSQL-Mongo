@@ -1,4 +1,4 @@
-import NarudzbinaDostavljac from "./komponente/NarudzbinaDostavljac/NarudzbinaDostavljac";
+import NarudzbinaDostavljac from "./komponente/Dealer/Dealer";
 function Deliever()
 {
     return(<div className="mt-5">

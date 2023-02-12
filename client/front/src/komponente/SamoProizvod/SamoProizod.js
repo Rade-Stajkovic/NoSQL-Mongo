@@ -1,7 +1,7 @@
 import React from "react";
 
-import MakeCarRental from "../Ren/Test/MakeCarRental";
-import MakeCarTest from "../Ren/Test/MakeCarTest";
+import MakeCarRental from "../Narudzbina/MakeCarRental";
+import MakeCarTest from "../Narudzbina/MakeCarTest";
 import Recenzija from "../Recenzija/Recenzija";
 import Komentari from "../Komentari/Komentari";
 import {
