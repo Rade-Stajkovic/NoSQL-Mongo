@@ -25,7 +25,7 @@ namespace NBP___Mongo.Controllers
 
 
         [HttpPost]
-
+        [Route("CreateDealer/{username}/{password}/{name}/{location}")]
         public async Task<IActionResult> CreateUser(string username, string password, string name, string location)
         {
             try

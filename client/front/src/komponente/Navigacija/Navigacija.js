@@ -43,11 +43,12 @@ const Navigacija = (props) =>
   const [categories, setCategories] = useState();
   const [markets, setMarkets] = useState();
   const[user_info, setUserinfo]=useState("");
-  const[delivery_info, setDeliveryinfo]=useState("");
+  const[dealer_info, setDealerinfo]=useState("");
+  const[dealer_name, setDealerName]=useState("");
   const[search, setSearch] = useState("");
   const[param, setparam] = useState("")
   const user = JSON.parse(localStorage.getItem('user-info'));
-  const del=localStorage.getItem('delivery-info');
+  const del=localStorage.getItem('dealer-info');
   const [message, setMessage] = useState('');
   
  
@@ -68,7 +69,14 @@ const Navigacija = (props) =>
     //console.log(del);
 
     if (del!=null)
-      setDeliveryinfo(del);
+    {
+      setDealerinfo(del);
+      const dealerInfo = JSON.parse(del);
+      const name = dealerInfo.name;
+      setDealerName(name);
+    }
+      
+      
 
 
     axios.get("https://localhost:44332/GetAllCategories")
@@ -119,7 +127,7 @@ const Navigacija = (props) =>
        localStorage.clear();
       //history.push("/");
       else 
-        localStorage.removeItem('delivery-info');
+        localStorage.removeItem('dealer-info');
       //window.location.reload();
       window.location.href='/';
     }
@@ -139,9 +147,10 @@ const Navigacija = (props) =>
 
     <MDBNavbar expand='lg'  bgColor='light'>
       <MDBContainer fluid>
-       
+   
+      
+      { dealer_info ? (<><MDBNavbarBrand > {dealer_name} </MDBNavbarBrand></>) : (<> <MDBNavbarBrand ><img src="https://cdn-icons-png.flaticon.com/512/2156/2156021.png" style={{ height: '30px', objectFit: 'cover' }} ></img></MDBNavbarBrand></>) }
 
-        { delivery_info ? (<><MDBNavbarBrand > {delivery_info}  </MDBNavbarBrand></>): (<> <MDBNavbarBrand ><img src="https://cdn-icons-png.flaticon.com/512/2156/2156021.png" style={{ height: '30px', objectFit: 'cover' }} ></img></MDBNavbarBrand></>)}
          
 
         <MDBNavbarToggler
@@ -160,7 +169,7 @@ const Navigacija = (props) =>
         <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
 
 
-        {delivery_info ? (<>
+        {dealer_info ? (<>
           </>)
           : (<>
           <MDBNavbarItem>
@@ -210,7 +219,7 @@ const Navigacija = (props) =>
       }
 
           
-    {user_info || delivery_info ? (<>        
+    {user_info || dealer_info ? (<>        
             <MDBNavbarLink onClick={logout} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Odjavi se</MDBNavbarLink>
        
         </>  ) : (<>

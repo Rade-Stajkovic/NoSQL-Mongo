@@ -85,7 +85,7 @@ async function register()
             let PhoneNumber=formValue.number;
             let Location=formValue.location;
 
-            let result = await fetch('https://localhost:44332/User/CreateUser/' + username + '/' + password + '/' + Name + '/' + SurName+ '/' + PhoneNumber + '/' + Location, {
+            let result = await fetch('https://localhost:44341/User/CreateUser/' + Name + '/' + SurName + '/' + username + '/' + password, {
               method: 'POST'
             })
             .then(response => {
@@ -111,9 +111,9 @@ async function register()
         <MDBCardBody size='lg' >
           <MDBRow>
           <MDBValidation className='row g-3'>
-            <MDBCol  className='order-2 order-lg-1 d-flex flex-column align-items-center mx-4 '>
+            <MDBCol  className='order-2 order-lg-1 d-flex flex-column align-items-center  '>
             <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-2">Registruj se</p>
-            <MDBRow className='pl-5'>
+           
 
             <MDBCol className='ml-5'>
 
@@ -131,41 +131,7 @@ async function register()
               </MDBValidationItem>
               </div>
 
-
-
-              <div className="d-flex flex-row align-items-center mb-4">
-              <MDBValidationItem feedback="Unesite korisničko ime" invalid >
-              <MDBInput
-                  value={formValue.username}
-                  name='username'
-                  onChange={onChange}
-                  className='form-control'
-                  id='validationCustom03'
-                  label='Korisničko ime'
-                  required
-                  
-                />
-              
-              </MDBValidationItem>
-              </div>
-
-              <div className="d-flex flex-row align-items-center mb-4">
-              <MDBValidationItem feedback="Unesite broj telefona" invalid >
-              <MDBInput
-                  value={formValue.number}
-                  name='number'
-                  onChange={onChange}
-                  className='form-control'
-                  id='validationCustom05'
-                  label='Broj telefona'
-                  required
-                  
-                />
-              
-              </MDBValidationItem>
-              </div>
-          </MDBCol>
-          <MDBCol>
+               <MDBCol>
 
 
 
@@ -183,6 +149,22 @@ async function register()
             </MDBValidationItem>
             </div>
 
+            <div className="d-flex flex-row align-items-center mb-4">
+              <MDBValidationItem feedback="Unesite korisničko ime" invalid >
+              <MDBInput
+                  value={formValue.username}
+                  name='username'
+                  onChange={onChange}
+                  className='form-control'
+                  id='validationCustom03'
+                  label='Korisničko ime'
+                  required
+                  
+                />
+              
+              </MDBValidationItem>
+              </div>
+
 
             <div className="d-flex flex-row align-items-center mb-4">
             <MDBValidationItem feedback='Unesite lozinku' invalid>
@@ -198,27 +180,20 @@ async function register()
             </MDBValidationItem>
             </div>
 
-            <div className="d-flex flex-row align-items-center mb-4">
-            <MDBValidationItem feedback="Unesite adresu" invalid >
-            <MDBInput
-                value={formValue.location}
-                name='location'
-                onChange={onChange}
-                className='form-control'
-                id='validationCustom06'
-                label='Adresa'
-                required
-                
-              />
             
-            </MDBValidationItem>
-            </div>
 
           </MDBCol>
 
 
 
-      </MDBRow>
+             
+
+          </MDBCol>
+         
+
+
+
+    
                  
       <div className='mb-2'>
         <MDBValidationItem className='col-12 mb-3' feedback='Morate da prihvatite pre registracije.' invalid>
@@ -234,7 +209,7 @@ async function register()
     </MDBCol>
             
     <MDBCol  className='order-1 order-lg-2 d-flex align-items-center'>
-      <MDBCardImage src='https://img.freepik.com/free-vector/seasonal-sale-discounts-presents-purchase-visiting-boutiques-luxury-shopping-price-reduction-promotional-coupons-special-holiday-offers-vector-isolated-concept-metaphor-illustration_335657-2766.jpg' fluid/>
+      <MDBCardImage src='https://img.freepik.com/free-vector/share-link-concept-illustration_114360-5438.jpg' fluid/>
     </MDBCol>
 
 </MDBValidation>
