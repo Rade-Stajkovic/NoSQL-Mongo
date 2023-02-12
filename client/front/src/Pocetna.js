@@ -245,8 +245,9 @@ function Pocetna() {
 
               </div>
             </MDBCardBody>
+            <a href={`/car/${c.id}`}>
             <MDBBtn className="mb-4 px-5"  size='lg'  >Prikazi vise</MDBBtn>
-            
+            </a>
            </MDBCard>
 
           )): <div>Nema vozila</div>}
@@ -255,9 +256,7 @@ function Pocetna() {
       </MDBRow>
     </MDBContainer>
      
-      <div>
-      <PreporuceniProizvodi />
-      </div>
+   
       </>
     );
   }

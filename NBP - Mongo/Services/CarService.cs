@@ -320,9 +320,9 @@ namespace NBP___Mongo.Services
 
         //Review 
 
-        public async Task<bool> AddNewReview(String text, String userId, String carId)
+        public async Task<bool> AddNewReview(String text, String userId, String CarID)
         {
-            Car car = await carCollection.Find(c => c.Id == carId).FirstOrDefaultAsync();
+            Car car = await carCollection.Find(c => c.Id == CarID).FirstOrDefaultAsync();
             User user = await userCollection.Find(u => u.ID == userId).FirstOrDefaultAsync();
 
             if (car == null || user == null )
@@ -334,10 +334,9 @@ namespace NBP___Mongo.Services
             Review review = new Review
             {
                 Text = text,
-                Car =  new MongoDBRef("car", carId),
-                User = new MongoDBRef("user", userId)
+                Car = new MongoDBRef("car", CarID),
+                User = user
             };
-
 
 
             await reviewCollection.InsertOneAsync(review);

@@ -1,8 +1,6 @@
 import React from 'react';
 import './Komentari.css';
-import { Modal, Form, FormControl, Button, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
-import { MDBBtn } from 'mdb-react-ui-kit';
-import { MDBIcon } from 'mdb-react-ui-kit';
+import { Modal } from 'react-bootstrap';
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -12,34 +10,39 @@ const Komentari = (props) => {
     const [text, setText] = useState('');
     const [comment, setComment] = useState();
     const [loading, setLoading] = useState(true);
-    let { IdProduct } = useParams();
+    let { CarID } = useParams();
+
+    const fetchData = async () => {
+        try {
+            const res = await  axios.get(`https://localhost:44341/Car/GetReviewsForCar/${CarID}`);
+                setComment(res.data);
+                setLoading(false)
+            
+        } 
+        catch (err) {
+            console.error(err);
+        }
+    };
 
 
     useEffect(() => {
-        axios.get(`https://localhost:44332/Review/GetReview/${IdProduct}`)
-            .then(res => {
-                console.log(res.data);
-                setComment(res.data);
-                setLoading(false)
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }, [IdProduct]);
+        fetchData();
+    }, [CarID]);
 
+    
     if (loading) return <p>Loading...</p>;
 
 
     return (
         <Modal {...props} size="lg" centered>
             <Modal.Header closeButton>
-                <Modal.Title><strong>{props.nameProduct} *KOMENTARI*</strong></Modal.Title>
+                <Modal.Title><strong>{props.name} *KOMENTARI*</strong></Modal.Title>
             </Modal.Header>
             <Modal.Body>
-  {comment.map(({ username, text, recommend }) => (
+  {comment.map(({ user: { username }, text }) => (
     <p>
       <strong>{username} :: </strong> 
-      <span className={`recommend-${recommend}`}>{text}</span>
+      <span>{text}</span>
     </p>
   ))}
 </Modal.Body>

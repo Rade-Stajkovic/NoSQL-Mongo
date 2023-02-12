@@ -206,13 +206,13 @@ namespace NBP___Mongo.Controllers
         // Reviews
 
         [HttpPost]
-        [Route("AddReview/{userId}/{carId}/{text}")]
+        [Route("AddReview/{userId}/{CarID}/{text}")]
 
-        public async Task<IActionResult> AddReview(String userId, String carId, String text)
+        public async Task<IActionResult> AddReview(String userId, String CarID, String text)
         {
             try
             {
-                await carService.AddNewReview(text, userId, carId);
+                await carService.AddNewReview(text, userId, CarID);
                 return Ok("Uspesno dodat review");
             }
             catch (Exception e)
@@ -244,13 +244,13 @@ namespace NBP___Mongo.Controllers
         }
 
         [HttpGet]
-        [Route("GetReviewsForCar/{carId}")]
+        [Route("GetReviewsForCar/{CarID}")]
 
-        public async Task<IActionResult> GetReviewsForCar(String carId)
+        public async Task<IActionResult> GetReviewsForCar(String CarID)
         {
             try
             {
-                List<Review> list = await carService.GetReviewsForCar(carId);
+                List<Review> list = await carService.GetReviewsForCar(CarID);
                 return Ok(list);
             }
             catch (Exception e)

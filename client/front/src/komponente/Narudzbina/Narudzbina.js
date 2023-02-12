@@ -3,35 +3,33 @@ import './Narudzbina.css';
 import { Modal, Form, FormControl, Button, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 import axios from 'axios';
 import { useState, useEffect } from "react";
-
+import { useParams } from 'react-router-dom';
 
 const Narudzbina = (props) => {
-    const { show, onHide, nameProduct, price, marketData } = props;
-    const [selectedMarket, setSelectedMarket] = useState(null);
-    const [kolicina, setKolicina] = useState(0);
-    const [dostavljac, setDostavljac] = useState('');
-    const [market, setMarket] = useState('');
-    const [cena, setCena] = useState(0);
-    const [lokacija, setLokacija] = useState('');
-    const [brtel, setBrTel] = useState('');
+    const { show, onHide, CarID, } = props;
 
-    const [deliveries, setDeliveries] = useState('');
-    
+    const [OccupiedFrom, setOccupiedFrom] = useState('');
+    const [OccupiedUntil, setOccupiedUntil] = useState('');
+
+    const [dealer, setDealer] = useState('');
+
 
 
     let test = localStorage.getItem('user-info');
-    let IDUser = null;
+    let UserID = null;
     if (test) {
         test = JSON.parse(test);
-        IDUser = test.returnID;
+        UserID = test.id;
+
+
     }
 
     useEffect(() => {
 
-        axios.get("https://localhost:44332/Delivery/GetAll")
+        axios.get("https://localhost:44341/Dealer/GetAllDealers")
             .then(res => {
                 console.log(res)
-                setDeliveries(res.data)
+                setDealer(res.data)
             })
 
             .catch(err => {
@@ -39,96 +37,77 @@ const Narudzbina = (props) => {
             })
     }, [])
 
-    console.log(deliveries);
+    console.log(dealer);
 
 
-    async function order(selectedMarket, nameProduct, cena, kolicina, lokacija, brtel, dostavljac, IDUser) {
-        console.log(selectedMarket, nameProduct, cena, kolicina, lokacija, brtel, dostavljac, IDUser);
+    // async function order(OccupiedFrom,OccupiedUntil, dealer, UserID) {
+    //     console.log(OccupiedFrom, OccupiedUntil, dealer, UserID);
 
 
-        if (!selectedMarket || !nameProduct || !cena || !kolicina || !lokacija || !brtel || !dostavljac || !IDUser) {
-            console.error("Nedostaju neke od obaveznih varijabli");
-            return;
-        }
+    //     if ( !OccupiedFrom || !OccupiedUntil || !Dea || !CarID || !UserID ) {
+    //         console.error("Nedostaju neke od obaveznih varijabli");
+    //         return;
+    //     }
 
-        try {
-            const response = await axios.post(`https://localhost:44332/Order/MakeOrder/${selectedMarket}/${nameProduct}/${cena}/${kolicina}/${lokacija}/${brtel}/${dostavljac}/${IDUser}`);
-
-
-            if (response.status !== 200) {
-                console.error(`API odgovor nije uspeo: ${response.status}`);
-                return;
-            }
-
-            const data = response.data;
+    //     try {
+    //         const response = await axios.post(`https://localhost:44341//RentCar/MakeCarRental/${OccupiedFrom}/${OccupiedFrom}/${CarID}/${DealerID}/${UserID}`);
 
 
-            
-            alert("Narudzbina je poslata dostavljacu");
-            console.log(response);
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    //         if (response.status !== 200) {
+    //             console.error(`API odgovor nije uspeo: ${response.status}`);
+    //             return;
+    //         }
+
+    //         const data = response.data;
 
 
 
-    const handlePriceCalculation = () => {
-        return  kolicina * (selectedMarket ? selectedMarket.price : 0);
-    }
+    //         alert("Narudzbina je poslata dealeru");
+    //         console.log(response);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
 
 
-    const handleSelectChange = (event) => {
-        setSelectedMarket(marketData.find(market => market.market === event.target.value));
-    }
+
+
+
 
 
     return (
         <Modal {...props} size="lg" centered>
             <Modal.Header closeButton>
-                <Modal.Title><strong>{props.nameProduct}</strong></Modal.Title>
+                <Modal.Title><strong>{props.name}</strong></Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form.Group>
-                    <Form.Label><strong> Narucujete iz: </strong></Form.Label>
-                    <Form.Control as="select" value={selectedMarket ? selectedMarket.market : ""} onChange={handleSelectChange}>
-                        <option value="">Izaberite market</option>
-                        {marketData.map((market, index) => (
-                           <option key={index} value={market.market} disabled={!market.available}  className={market.sale ? 'sale' : ''}>
-                           {market.market} - cena : {market.price} din  {market.sale ? 'AKCIJSKA CENA' : ''} {!market.available ? "(Trenutno nema na stanju u ovom marketu)" : ""}
-                       </option>
-                        ))}
-                    </Form.Control>
-                </Form.Group>
+
                 <Form>
 
                     <Form.Group>
-                        <Form.Label><strong>Unesite Vase informacije</strong></Form.Label>
+                        <Form.Label><strong>Popunite </strong></Form.Label>
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label><strong>Broj telefona</strong></Form.Label>
-                        <Form.Control value={brtel} onChange={e => setBrTel(e.target.value)} type="text" placeholder="Broj telefona" />
+                        <Form.Label><strong>OccupiedFrom</strong></Form.Label>
+                        <Form.Control type="date" value={OccupiedFrom} onChange={e => setOccupiedFrom(e.target.value)} />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label><strong>Lokacija</strong></Form.Label>
-                        <Form.Control value={lokacija} onChange={e => setLokacija(e.target.value)} type="text" placeholder="Lokacija" />
+                        <Form.Label><strong>OccupiedUntil</strong></Form.Label>
+                        <Form.Control type="date" value={OccupiedUntil} onChange={e => setOccupiedUntil(e.target.value)} />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label><strong>Dostavljač</strong></Form.Label>
-                        <Form.Control as="select" value={dostavljac} onChange={e => setDostavljac(e.target.value)}>
-                            <option value="">Izaberite dostavljača</option>
-                            {deliveries && deliveries.length > 0 && deliveries.map(delivery => (
-                                <option key={delivery.id} value={delivery.name}>{delivery.name}</option>
+                        <Form.Label><strong>Dealer</strong></Form.Label>
+                        <Form.Control as="select" value={dealer} onChange={e => setDealer(e.target.value)}>
+                            <option value="">dealer</option>
+                            {dealer && dealer.length > 0 && dealer.map(d => (
+                                <option key={d.id} value={d.name}>{d.name}</option>
                             ))}
                         </Form.Control>
                     </Form.Group>
-                    <Form.Group>
-                        <Form.Label><strong>Kolicina</strong></Form.Label>
-                        <Form.Control value={kolicina} onChange={e => setKolicina(e.target.value)} type="number" placeholder="Unesite kolicinu" />
-                    </Form.Group>
 
-                    <p><strong> Ukupna cena  ove porudzbine: {handlePriceCalculation(selectedMarket)}</strong></p>
-                    <Button onClick={() => order(selectedMarket.market, nameProduct, handlePriceCalculation(selectedMarket), kolicina, lokacija, brtel, dostavljac, IDUser)}>Narucite</Button>
+
+
+                    {/* <Button onClick={() => order(OccupiedFrom, OccupiedUntil, dealer, UserID)}>Rezervisi</Button> */}
 
                 </Form>
             </Modal.Body>

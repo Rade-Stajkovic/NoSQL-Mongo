@@ -3,6 +3,7 @@ import { Modal, Form, FormControl, Button, InputGroup, DropdownButton, Dropdown 
 import { MDBBtn } from 'mdb-react-ui-kit';
 import { MDBIcon } from 'mdb-react-ui-kit';
 import { useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 
@@ -11,16 +12,17 @@ import axios from 'axios';
 const Recenzija = (props) => {
     const [text, setText] = useState('');
    
-    const [idProduct, setIdProduct] = useState('');
-    const [recommend, setRecommend] = useState(null);
+    const [carID, setCarId] = useState('');
+    let { CarID } = useParams();
+
     const [errorMessage, setErrorMessage] = useState('');
     let test = localStorage.getItem('user-info');
-    let IDUser = null;
-    let username = null;
+    let userId = null;
+
     if (test) {
         test = JSON.parse(test);
-        IDUser = test.returnID;
-        username = test.userName;
+        userId = test.id;
+     
     }
     const addComment = async() => {
         if (!text) {
@@ -28,14 +30,10 @@ const Recenzija = (props) => {
             return;
           }
       
-          if (recommend === null) {
-            setErrorMessage('Da li vam se ovaj proizvod dopao?Kliknite like.');
-            return;
-          }
-          setIdProduct(props.idProduct);
+      
 
         try {
-            const response = await axios.post(`https://localhost:5001/Review/ReviewPoduct/${text}/${username}/${idProduct}/${recommend}`);
+            const response = await axios.post(`https://localhost:44341/Car/AddReview/${userId}/${CarID}/${text}`);
 
 
             if (response.status !== 200) {
@@ -44,32 +42,17 @@ const Recenzija = (props) => {
             }
 
             const data = response.data;
-
-
-            
             alert("Dodali ste recenziju");
-            console.log(response);
+            console.log(data);
         } catch (error) {
             console.error(error);
         }
     }
 
-      
-
-
-    const handleLike = () => {
-        setRecommend(true);
-    };
-    
-    const handleDislike = () => {
-        setRecommend(false);
-    };
-
-
     return (
         <Modal {...props} size="lg" centered>
             <Modal.Header closeButton>
-                <Modal.Title><strong>{props.nameProduct} *RECENZIJE*</strong></Modal.Title>
+                <Modal.Title><strong>{props.name} *RECENZIJE*</strong></Modal.Title>
             </Modal.Header>
             <Modal.Body>
             {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
@@ -80,12 +63,7 @@ const Recenzija = (props) => {
                             onChange={e => setText(e.target.value)} />
 
                         <Form.Group className="d-flex">
-                        <Button color="primary" onClick={handleDislike}>
-    <MDBIcon fas icon="thumbs-down" />
-</Button>
-                            <Button color="primary" onClick={handleLike}>
-    <MDBIcon fas icon="thumbs-up" />
-</Button>
+
                         </Form.Group>
                     </Form.Group>
                     <Form.Group>
@@ -94,6 +72,8 @@ const Recenzija = (props) => {
                 </Form>
             </Modal.Body>
         </Modal>
+        
+       
     )
 };
 

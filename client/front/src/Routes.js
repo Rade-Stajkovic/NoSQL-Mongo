@@ -50,12 +50,12 @@ function Rute ()
        
             <Route path='/logovanje' element={<Logovanje />} />
             <Route path='/registracija' element={<Registracija/>} />
-            <Route path='/kategorija/:name/:IDCat' element={<Kategorija/>} />
+        
             <Route path='/' element={<Pocetna/>} />
-            <Route path='/proizvod/:IdProduct' element={< SamoProizvod />} />
+            <Route path='/car/:CarID' element={< SamoProizvod />} />
             <Route path='dealer' element={<Dostavljac/>} />
             <Route path='/pretraga' element = {<Pretraga/>} />
-            <Route path='/market/:name/:IDMarket' element={<Akcije/>} />
+           
         </Routes>
         </BrowserRouter>
         </div>

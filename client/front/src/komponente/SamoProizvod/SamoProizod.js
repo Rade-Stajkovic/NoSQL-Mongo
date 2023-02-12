@@ -22,15 +22,16 @@ import { useParams } from 'react-router-dom';
 
 function SamoProizvod() {
 
-  const [product, setProduct] = useState();
+  const [car, setCar] = useState();
   const [order, setOrder] = useState("");
 
-  let { IdProduct } = useParams();
+  const { CarID } = useParams();
+
 
   const [loading, setLoading] = useState(true);
 
-  const [following, setFollowing] = useState(localStorage.getItem(`following-${IdProduct}`) || false);
-  const [user_info,setUserinfo]=useState(JSON.parse(localStorage.getItem('user-info')));
+  // const [following, setFollowing] = useState(localStorage.getItem(`following-${CarID}`) || false);
+  const [user_info, setUserinfo] = useState(JSON.parse(localStorage.getItem('user-info')));
 
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
@@ -53,55 +54,57 @@ function SamoProizvod() {
     setShowModal2(true);
   };
 
-  const handleCloseModal2= () => {
+  const handleCloseModal2 = () => {
     setShowModal2(false);
   };
 
-  let test = localStorage.getItem('user-info');
-  let IDUser = null;
-  if (test) {
-    test = JSON.parse(test);
-    IDUser = test.returnID;
-  }
+  // let test = localStorage.getItem('user-info');
+  // let IDUser = null;
+  // if (test) {
+  //   test = JSON.parse(test);
+  //   IDUser = test.returnID;
+  // }
 
-  const Follow = async () => {
-    setFollowing(true);
-    localStorage.setItem(`following-${IdProduct}`, true);
+  // const Follow = async () => {
+  //   setFollowing(true);
+  //   localStorage.setItem(`following-${CarID}`, true);
+  //   try {
+  //     const response = await axios.put(`https://localhost:44332/User/FollowProduct/${IDUser}/${CarID}`);
+  //     console.log(response.data);
+  //     alert(`Uspesno ste zapratili -${car.nameProduct}`);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // const Unfollow = async () => {
+  //   setFollowing(false);
+  //   localStorage.removeItem(`following-${CarID}`);
+  //   try {
+  //     const response = await axios.delete(`https://localhost:44332/User/UnFollowProduct/${IDUser}/${CarID}`);
+  //     console.log(response.data);
+  //     alert("Uspeno ste odpratili proizovd");
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+
+  const fetchData = async () => {
     try {
-      const response = await axios.put(`https://localhost:44332/User/FollowProduct/${IDUser}/${IdProduct}`);
-      console.log(response.data);
-      alert(`Uspesno ste zapratili -${product.nameProduct}`);
-    } catch (error) {
-      console.error(error);
+      const res = await axios.get(`https://localhost:44341/Car/GetMoreDetails/${CarID}`);
+      setCar(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
     }
   };
-
-  const Unfollow = async () => {
-    setFollowing(false);
-    localStorage.removeItem(`following-${IdProduct}`);
-    try {
-      const response = await axios.delete(`https://localhost:44332/User/UnFollowProduct/${IDUser}/${IdProduct}`);
-      console.log(response.data);
-      alert("Uspeno ste odpratili proizovd");
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
 
   useEffect(() => {
-    axios.get(`https://localhost:44332/Product/GetMoreDetails/${IdProduct}`)
-      .then(res => {
-        console.log(res.data);
-        setProduct(res.data);
-        setLoading(false)
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }, [IdProduct]);
+    fetchData();
+  }, [CarID]);
 
-  console.log(product)
+  console.log(car)
   if (loading) return <p>Loading...</p>;
 
   return (
@@ -119,7 +122,7 @@ function SamoProizvod() {
                     className="bg-image rounded hover-zoom hover-overlay"
                   >
                     <MDBCardImage
-                      src={"https://localhost:44341/CarsPictures/" + product.pictureProduct}
+                      src={"https://localhost:44341/CarsPictures/" + car.pictureProduct}
                       fluid
                       className="w-100"
                     />
@@ -132,88 +135,106 @@ function SamoProizvod() {
                   </MDBRipple>
                 </MDBCol>
                 <MDBCol md="6">
-                  <h5>{product.nameProduct}</h5>
+                  <h5>{car.mark.name} - {car.carModel.name} </h5>
                   <div className="d-flex flex-row">
 
                   </div>
                   <div className="mt-1 mb-0 text-muted small">
-                    <span>Proizvodjač :</span>
+                    <span>origin:</span>
                     <span className="text-primary"> • </span>
-                    <span>{product.manufacturer}</span>
-                    <span className="text-primary">  </span>
+                    <span>{car.mark.origin}</span>
+                    {/* <span className="text-primary">  </span>
+                    <span>Description:</span>
+                    <span className="text-primary"> • </span>
+                    <span>{car.description}</span>
+                    <span className="text-primary">  </span> */}
+                  </div>
+
+                  <div className="mt-1 mb-0 text-muted small">
+                    <span>year:</span>
+                    <span className="text-primary"> • </span>
+                    <span>  {car.year}</span>
 
                   </div>
 
-                  <div className="mb-2 text-muted small">
-                    <span>Reviews</span>
+                  <div className="mt-1 mb-0 text-muted small">
+                    <span>price:</span>
                     <span className="text-primary"> • </span>
-                    <span>  {product.reviews}</span>
-                    <span className="text-primary"> • </span>
-                      <span style={{ color: product.rank >= 50 ? 'green' : 'inherit' }}>
-                        {product.rank} %
-                        {product.rank >= 50 && <span> !!! PREPORUČUJEMO PROIZVOD !!!</span>}
-                      </span>
+                    <span>  {car.price} € </span>
+
                   </div>
 
 
 
-                    <div>
-                    <MDBBtn color="primary" size="sm" onClick={handleOpenModal2}>Prikazi Recenzije</MDBBtn>
-                    <Komentari show={showModal2} onHide={handleCloseModal2} nameProduct={product.nameProduct} idProduct={product.idProduct} />
+                  <div className="mt-1 mb-0 text-muted small">
+                    <span>color:</span>
+                    <span className="text-primary"> • </span>
+                    <span> {car.exteriorColor}</span>
                   </div>
-                 
 
-                  {user_info ? (<> <div>
-                    <MDBBtn color="primary" size="sm" onClick={handleOpenModal}>Dodaj recenziju</MDBBtn>
-                    <Recenzija show={showModal} onHide={handleCloseModal} nameProduct={product.nameProduct} idProduct={product.idProduct} />
-                  </div></>):
-                  (<></>)}
-              
-                  
+                  <div className="mt-1 mb-0 text-muted small">
+                    <span>engineType:</span>
+                    <span className="text-primary"> • </span>
+                    <span> {car.engineType.fuelType}</span>
+                    <span className="text-primary"> • </span>
+                    <span>displacement - {car.engineType.displacement}</span>
+                    <span className="text-primary"> • </span>
+                    <span>power - {car.engineType.power}</span>
+                  </div>
+
+
 
                 </MDBCol>
 
 
                 <MDBCol md="6" lg="3" className="border-sm-start-none border-start">
                   <div>
-                    {product.stored.map(market => (
-                      <div key={market.id} className="d-flex flex-column align-items-start mb-1">
-                        <div className="d-flex flex-row align-items-center">
-                          <h4 className="mb-1 me-1">{market.market}-</h4>
-                          <h4 className="mb-1 me-1 ml-auto">{market.price} din</h4>
+                    <div className="mt-1 mb-0 text-muted small">
+                      <span>Reviews</span>
+                      <span className="text-primary"> • </span>
 
-                        </div>
+                    </div>
 
-                      </div>
-                    ))}
+                    <div>
+                      <MDBBtn color="primary" size="sm" onClick={handleOpenModal2}>Prikazi Recenzije</MDBBtn>
+                      <Komentari show={showModal2} onHide={handleCloseModal2} name={car.carModel.name} CarID={car.CarID} />
+                    </div>
+
+
+                    {user_info ? (<> <div>
+                      <MDBBtn color="primary" size="sm" onClick={handleOpenModal}>Dodaj recenziju</MDBBtn>
+                      <Recenzija show={showModal} onHide={handleCloseModal} name={car.carModel.name} CarID={car.CarID} />
+                    </div></>) :
+                      (<></>)}
+
+                  
+
+
                   </div>
 
 
 
 
                   {user_info ? (<>
-                    <div className="d-flex flex-column mt-4">
-                    <MDBBtn color="primary" size="sm" onClick={ordershow}> NARUCI</MDBBtn></div>
-                  <Narudzbina show={order} onHide={orderhide} nameProduct={product.nameProduct} marketData={product.stored}></Narudzbina>
-                  <div className="d-flex flex-column mt-4">
-                    {following ? (
-                      <MDBBtn color="danger" size="sm" onClick={Unfollow}>
-                        Prestani da pratiš
-                      </MDBBtn>
-                    ) : (
-                      <MDBBtn color="primary" size="sm" onClick={Follow}>
-                        Zaprati Proizvod
-                      </MDBBtn>
-                    )}
-                  </div>
-                  
-                  
-                  
+
+
+                    <MDBBtn color="primary" size="sm" onClick={ordershow}>
+                      {car.rentOrSale ? "Make a Rent" : "Make a Test Drive"}
+                    </MDBBtn>
+
+                    <Narudzbina
+                      show={order}
+                      onHide={orderhide}
+                      CarID={car.CarID}
+                    >
+                    </Narudzbina>
+
+
                   </>)
-                  
-                  :(<></>)}
-                  
-                  
+
+                    : (<></>)}
+
+
                 </MDBCol>
 
               </MDBRow>
